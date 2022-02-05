@@ -80,7 +80,7 @@ python3 main.py # run the bot.
 ```
 
 # Credits 💖
-- [Me](https://github.com/Surareddy22) ``Just Modify``
+- [Me](https://github.com/SRTheProgrammer) ``Just Modify``
 - [Levina](https://github.com/levina-lab) ``Dev``
 - [Zxce3](https://github.com/Zxce3) ``Dev``
 - [tofikdn](https://github.com/tofikdn) ``Dev``
