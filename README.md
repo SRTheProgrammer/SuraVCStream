@@ -3,7 +3,7 @@
     <br><b>Sura VC Stream is an Advanced Telegram Bot that's allow you to play Video & Music on Telegram Group Video Chat</b><br>
 </p>
 
-## 🎭 Preview
+## Preview
 <p align="center">
   <img src="https://telegra.ph/file/21a41d5e4636289c2d768.png">
 </p>
@@ -50,17 +50,17 @@
 | `/clean` | clean all raw files |
 | `/rmd` | clean all downloaded files |
 
-## Generate Pyrogram session string from below 🔻
+## Generate Pyrogram session string from below
 
 [![GenerateString](https://img.shields.io/badge/repl.it-generateString-yellowgreen)](https://replit.com/@Surareddy22/StringSession#main.py){:target="\_blank"}
 
-## Heroku Deployment 💜
+## Heroku Deployment
 The easy way to host this bot, deploy to Heroku, Change the app country to Europe (it will help to make the bot stable).
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
-## VPS Deployment 📡
-Get the best Quality of streaming performance by hosting it on VPS, here's the step's:
+## VPS Deployment 
+Get the best Quality of streaming performance by hosting it on VPS, Steps:
 
 ```sh
 sudo apt update && apt upgrade -y
