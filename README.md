@@ -52,12 +52,12 @@
 
 ## Generate Pyrogram session string from below 🔻
 
-[![GenerateString](https://img.shields.io/badge/repl.it-generateString-yellowgreen)](https://replit.com/@Surareddy22/StringSession#main.py){:target="_blank" rel="noopener"}
+[![GenerateString](https://img.shields.io/badge/repl.it-generateString-yellowgreen)](https://replit.com/@Surareddy22/StringSession#main.py)
 
 ## Heroku Deployment 💜
 The easy way to host this bot, deploy to Heroku, Change the app country to Europe (it will help to make the bot stable).
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy){:target="_blank" rel="noopener"}
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)[target="_blank"]
 
 ## VPS Deployment 📡
 Get the best Quality of streaming performance by hosting it on VPS, here's the step's:
