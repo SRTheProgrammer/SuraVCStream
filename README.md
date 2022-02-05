@@ -52,7 +52,7 @@
 
 ## Generate Pyrogram session string from below
 
-[![GenerateString](https://img.shields.io/badge/repl.it-generateString-yellowgreen)](https://replit.com/@Surareddy22/StringSession#main.py){:target="\_blank"}
+[![GenerateString](https://img.shields.io/badge/repl.it-generateString-yellowgreen)](https://replit.com/@Surareddy22/StringSession#main.py)
 
 ## Heroku Deployment
 The easy way to host this bot, deploy to Heroku, Change the app country to Europe (it will help to make the bot stable).
