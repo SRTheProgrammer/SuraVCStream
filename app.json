@@ -1,5 +1,5 @@
 {
-    "name": "Video x Music Stream Bot",
+    "name": "Video/Music Stream Bot",
     "description": "Telegram bot for Streaming Video & Music Through the Telegram Group Video Chat, powered by PyTgCalls and Pyrogram",
     "logo": "https://telegra.ph/file/5f2e911c64cf25f99c591.jpg",
     "keywords": [
@@ -12,7 +12,7 @@
         "pyrogram"
     ],
     "website": "https://t.me/SuraBotStats",
-    "repository": "https://github.com/Surareddy22/SuraVCStream",
+    "repository": "https://github.com/SRTheProgrammer/SuraVCStream",
     "success_url": "https://t.me/dsurareddy",
     "env": {
         "API_ID": {
@@ -44,7 +44,7 @@
             "required": true
         },
         "MONGODB_URL": {
-            "description": "fill with the mongodb url you created from cloud.mongodb.com (tutorial about how to make it, find it on @VeezSupportGroup)",
+            "description": "fill with the mongodb url you created from cloud.mongodb.com",
             "required": true
         },
         "SUDO_USERS": {
@@ -55,7 +55,7 @@
         "UPSTREAM_REPO": {
             "description": "This is needed for update feature, if you deployed forked repo put your forked repo link here, if not just leave it as it",
             "required": true,
-            "value": "https://github.com/Surareddy22/SuraVCStream"
+            "value": "https://github.com/SRTheProgrammer/SuraVCStream"
         },
         "GROUP_SUPPORT": {
             "description": "if you have group, then fill the group username here without @",
