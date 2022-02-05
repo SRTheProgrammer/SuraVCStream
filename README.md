@@ -57,7 +57,7 @@
 ## Heroku Deployment
 The easy way to host this bot, deploy to Heroku, Change the app country to Europe (it will help to make the bot stable).
 
-<a href="https://heroku.com/deploy" target="blank"><img src="https://www.herokucdn.com/deploy/button.svg" alt="Heroku"></a>
+<a href="https://heroku.com/deploy" target="_blank"><img src="https://www.herokucdn.com/deploy/button.svg" alt="Heroku"></a>
 
 ## VPS Deployment 
 Get the best Quality of streaming performance by hosting it on VPS, Steps:
