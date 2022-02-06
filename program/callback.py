@@ -24,8 +24,7 @@ async def cbstart(_, query: CallbackQuery):
 📕 **Find out all the Bot's commands and how they work by clicking on the » 🛠️ Check Commands button!**
 
 🔖 **To know how to use this bot, please click on the » 📕 Read Basic Guide button!**
-
- **To Deploy Your Own Source Click On The My Source Code Button **
+**To Deploy Your Own Source Click On The My Source Code Button **
 """,
         reply_markup=InlineKeyboardMarkup(
             [
@@ -50,7 +49,7 @@ async def cbstart(_, query: CallbackQuery):
                 ],
                 [
                     InlineKeyboardButton(
-                        "My Source Code", url="https://github.com/SRTheProgrammer/SuraVCStream"
+                        ":electron:	My Source Code", url="https://github.com/SRTheProgrammer/SuraVCStream"
                     )
                 ],
             ]
