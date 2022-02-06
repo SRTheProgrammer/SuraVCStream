@@ -62,7 +62,7 @@ async def start_(client: Client, message: Message):
 
 🔖 **To know how to use this bot, please click on the » 📕 Read Basic Guide button!**
 
-**To Deploy Your Own Source Click On The My Source Code Button**
+**To Deploy Your Own Source Click On The » 👉 My Source Code Button!**
 """,
         reply_markup=InlineKeyboardMarkup(
             [
