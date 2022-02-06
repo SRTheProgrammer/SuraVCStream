@@ -47,8 +47,6 @@
 | `/leaveall` | order the userbot to leave from all group (sudo only) |
 | `/update` | update your bot directly without leaving telegram (sudo only) |
 | `/restart` | restart your bot directly without leaving telegram (sudo only) |
-| `/clean` | clean all raw files |
-| `/rmd` | clean all downloaded files |
 
 ## Generate Pyrogram session string from below
 
