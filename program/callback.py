@@ -49,7 +49,7 @@ async def cbstart(_, query: CallbackQuery):
                 ],
                 [
                     InlineKeyboardButton(
-                        ":electron:	My Source Code", url="https://github.com/SRTheProgrammer/SuraVCStream"
+                        :electron:"My Source Code", url="https://github.com/SRTheProgrammer/SuraVCStream"
                     )
                 ],
             ]
