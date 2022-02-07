@@ -53,6 +53,10 @@ async def cbstart(_, query: CallbackQuery):
                         "👉 My Source Code", url="https://github.com/SRTheProgrammer/SuraVCStream"
                     )
                 ],
+                [    InlineKeyboardButton(
+                    "My Youtube Channel", url="https://www.youtube.com/channel/UCCmjxoJe_6T1ota84YH3ikg?sub_confirmation=1"
+                     )
+                ]
             ]
         ),
         disable_web_page_preview=True,
