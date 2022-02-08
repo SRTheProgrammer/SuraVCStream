@@ -1,4 +1,4 @@
-Copyright (C) 2021 By SuraMusicProject
+#Copyright (C) 2021 By SuraMusicProject
 
 import os
 from pyrogram import Client, filters
