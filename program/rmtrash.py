@@ -1,4 +1,4 @@
-# Copyright (C) 2021 By SuraMusicProject
+Copyright (C) 2021 By SuraMusicProject
 
 import os
 from pyrogram import Client, filters
@@ -6,7 +6,7 @@ from pyrogram.types import Message
 from driver.filters import command, other_filters
 from driver.decorators import sudo_users_only, errors
 
-downloads = os.path.realpath("program/downloads")
+downloads = os.path.realpath("/downloads")
 raw = os.path.realpath(".")
 
 @Client.on_message(command(["rmd", "clear"]) & ~filters.edited)
