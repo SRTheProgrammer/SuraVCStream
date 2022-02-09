@@ -91,7 +91,7 @@ async def start_(client: Client, message: Message):
                     )
                 ],
                 [    InlineKeyboardButton(
-                    "My Youtube Channel", url="https://www.youtube.com/channel/UCCmjxoJe_6T1ota84YH3ikg?sub_confirmation=1"
+                    " :yt: Youtube Channel", url="https://www.youtube.com/channel/UCCmjxoJe_6T1ota84YH3ikg?sub_confirmation=1"
                      )
                 ]
             ]
