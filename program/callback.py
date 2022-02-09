@@ -54,7 +54,7 @@ async def cbstart(_, query: CallbackQuery):
                     )
                 ],
                 [    InlineKeyboardButton(
-                    "My Youtube Channel", url="https://www.youtube.com/channel/UCCmjxoJe_6T1ota84YH3ikg?sub_confirmation=1"
+                    "❗️⚠️Youtube Channel⚠️❗️", url="https://www.youtube.com/channel/UCCmjxoJe_6T1ota84YH3ikg?sub_confirmation=1"
                      )
                 ]
             ]
