@@ -1,20 +1,27 @@
-# Copyright (C) 2021 By Sura VC Music-Project
+# Copyright (C) 2021 By Sura VC Project
 # Commit Start Date 20/10/2021
 # Finished On 28/10/2021
 
+import os
 import re
 import asyncio
-
-from config import BOT_USERNAME, IMG_1, IMG_2
+# repository stuff
+from config import BOT_USERNAME, IMG_1, IMG_2, IMG_5
 from program.utils.inline import stream_markup
 from driver.design.thumbnail import thumb
 from driver.design.chatname import CHAT_TITLE
 from driver.filters import command, other_filters
 from driver.queues import QUEUE, add_to_queue
-from driver.surabot import call_py, user
+from driver.core import calls, user, bot
+from driver.database.dbpunish import is_gbanned_user
+from driver.database.dblockchat import blacklisted_chats
+from driver.database.dbqueue import add_active_chat, remove_active_chat, music_on
+# pyrogram stuff
 from pyrogram import Client
 from pyrogram.errors import UserAlreadyParticipant, UserNotParticipant
 from pyrogram.types import InlineKeyboardMarkup, Message
+# py-tgcalls stuff
+from pytgcalls import idle
 from pytgcalls import StreamType
 from pytgcalls.types.input_stream import AudioVideoPiped
 from pytgcalls.types.input_stream.quality import (
@@ -23,6 +30,7 @@ from pytgcalls.types.input_stream.quality import (
     LowQualityVideo,
     MediumQualityVideo,
 )
+# youtube-dl stuff
 from youtubesearchpython import VideosSearch
 
 
@@ -33,7 +41,7 @@ def ytsearch(query: str):
         songname = data["title"]
         url = data["link"]
         duration = data["duration"]
-        thumbnail = f"https://i.ytimg.com/vi/{data['id']}/hqdefault.jpg"
+        thumbnail = data["thumbnails"][0]["url"]
         return [songname, url, duration, thumbnail]
     except Exception as e:
         print(e)
@@ -57,15 +65,32 @@ async def ytdl(link):
         return 0, stderr.decode()
 
 
+def convert_seconds(seconds):
+    seconds = seconds % (24 * 3600)
+    seconds %= 3600
+    minutes = seconds // 60
+    seconds %= 60
+    return "%02d:%02d" % (minutes, seconds)
+
+
 @Client.on_message(command(["vplay", f"vplay@{BOT_USERNAME}"]) & other_filters)
 async def vplay(c: Client, m: Message):
     await m.delete()
     replied = m.reply_to_message
     chat_id = m.chat.id
     user_id = m.from_user.id
+    user_xd = f"[{m.from_user.first_name}](tg://user?id={m.from_user.id})"
+    if chat_id in await blacklisted_chats():
+        await m.reply(
+            "❗️ This chat has blacklisted by sudo user and You're not allowed to use me in this chat."
+        )
+        return await bot.leave_chat(chat_id)
+    if await is_gbanned_user(user_id):
+        await message.reply_text(f"❗️ {user_xd} **You've blocked from using this bot!**")
+        return
     if m.sender_chat:
         return await m.reply_text(
-            "you're an __Anonymous__ Admin !\n\n» revert back to user account from admin rights."
+            "you're an __Anonymous__ user !\n\n» revert back to your real user account to use this bot."
         )
     try:
         aing = await c.get_me()
@@ -106,6 +131,7 @@ async def vplay(c: Client, m: Message):
                     "https://t.me/+", "https://t.me/joinchat/"
                 )
             await user.join_chat(invitelink)
+            await remove_active_chat(chat_id)
     except UserNotParticipant:
         try:
             invitelink = await c.export_chat_invite_link(chat_id)
@@ -114,13 +140,13 @@ async def vplay(c: Client, m: Message):
                     "https://t.me/+", "https://t.me/joinchat/"
                 )
             await user.join_chat(invitelink)
+            await remove_active_chat(chat_id)
         except UserAlreadyParticipant:
             pass
         except Exception as e:
             return await m.reply_text(
                 f"❌ **userbot failed to join**\n\n**reason**: `{e}`"
             )
-
     if replied:
         if replied.video or replied.document:
             loser = await replied.reply("📥 **downloading video...**")
@@ -135,29 +161,42 @@ async def vplay(c: Client, m: Message):
                 else:
                     Q = 720
                     await loser.edit(
-                        "» __only 720, 480, 360 allowed__ \n💡 **now streaming video in 720p**"
+                        "» only 720, 480, 360 allowed\n\n💡 now streaming video in **720p**"
                     )
             try:
                 if replied.video:
                     songname = replied.video.file_name[:70]
-                    duration = replied.video.duration
+                    duration = convert_seconds(replied.video.duration)
                 elif replied.document:
                     songname = replied.document.file_name[:70]
-                    duration = replied.document.duration
+                    duration = convert_seconds(replied.document.duration)
             except BaseException:
                 songname = "Video"
 
             if chat_id in QUEUE:
+                gcname = m.chat.title
+                ctitle = await CHAT_TITLE(gcname)
+                title = songname
+                userid = m.from_user.id
+                thumbnail = f"{IMG_5}"
+                image = await thumb(thumbnail, title, userid, ctitle)
                 pos = add_to_queue(chat_id, songname, dl, link, "Video", Q)
                 await loser.delete()
                 requester = f"[{m.from_user.first_name}](tg://user?id={m.from_user.id})"
                 buttons = stream_markup(user_id)
                 await m.reply_photo(
-                    photo=f"{IMG_1}",
+                    photo=image,
                     reply_markup=InlineKeyboardMarkup(buttons),
                     caption=f"💡 **Track added to queue »** `{pos}`\n\n🗂 **Name:** [{songname}]({link}) | `video`\n⏱️ **Duration:** `{duration}`\n🧸 **Request by:** {requester}",
                 )
+                os.remove(image)
             else:
+                gcname = m.chat.title
+                ctitle = await CHAT_TITLE(gcname)
+                title = songname
+                userid = m.from_user.id
+                thumbnail = f"{IMG_5}"
+                image = await thumb(thumbnail, title, userid, ctitle)
                 if Q == 720:
                     amaze = HighQualityVideo()
                 elif Q == 480:
@@ -165,24 +204,28 @@ async def vplay(c: Client, m: Message):
                 elif Q == 360:
                     amaze = LowQualityVideo()
                 await loser.edit("🔄 **Joining vc...**")
-                await call_py.join_group_call(
+                await music_on(chat_id)
+                await add_active_chat(chat_id)
+                await calls.join_group_call(
                     chat_id,
                     AudioVideoPiped(
                         dl,
                         HighQualityAudio(),
                         amaze,
                     ),
-                    stream_type=StreamType().local_stream,
+                    stream_type=StreamType().pulse_stream,
                 )
                 add_to_queue(chat_id, songname, dl, link, "Video", Q)
                 await loser.delete()
                 requester = f"[{m.from_user.first_name}](tg://user?id={m.from_user.id})"
                 buttons = stream_markup(user_id)
                 await m.reply_photo(
-                    photo=f"{IMG_2}",
+                    photo=image,
                     reply_markup=InlineKeyboardMarkup(buttons),
                     caption=f"🗂 **Name:** [{songname}]({link}) | `video`\n⏱️ **Duration:** `{duration}`\n🧸 **Request by:** {requester}",
                 )
+                await idle()
+                os.remove(image)
         else:
             if len(m.command) < 2:
                 await m.reply(
@@ -222,10 +265,13 @@ async def vplay(c: Client, m: Message):
                                 reply_markup=InlineKeyboardMarkup(buttons),
                                 caption=f"💡 **Track added to queue »** `{pos}`\n\n🗂 **Name:** [{songname}]({url}) | `video`\n⏱ **Duration:** `{duration}`\n🧸 **Request by:** {requester}",
                             )
+                            os.remove(image)
                         else:
                             try:
                                 await loser.edit("🔄 **Joining vc...**")
-                                await call_py.join_group_call(
+                                await music_on(chat_id)
+                                await add_active_chat(chat_id)
+                                await calls.join_group_call(
                                     chat_id,
                                     AudioVideoPiped(
                                         ytlink,
@@ -243,8 +289,11 @@ async def vplay(c: Client, m: Message):
                                     reply_markup=InlineKeyboardMarkup(buttons),
                                     caption=f"🗂 **Name:** [{songname}]({url}) | `video`\n⏱ **Duration:** `{duration}`\n🧸 **Request by:** {requester}",
                                 )
+                                await idle()
+                                os.remove(image)
                             except Exception as ep:
                                 await loser.delete()
+                                await remove_active_chat(chat_id)
                                 await m.reply_text(f"🚫 error: `{ep}`")
 
     else:
@@ -286,10 +335,13 @@ async def vplay(c: Client, m: Message):
                             reply_markup=InlineKeyboardMarkup(buttons),
                             caption=f"💡 **Track added to queue »** `{pos}`\n\n🗂 **Name:** [{songname}]({url}) | `video`\n⏱ **Duration:** `{duration}`\n🧸 **Request by:** {requester}",
                         )
+                        os.remove(image)
                     else:
                         try:
                             await loser.edit("🔄 **Joining vc...**")
-                            await call_py.join_group_call(
+                            await music_on(chat_id)
+                            await add_active_chat(chat_id)
+                            await calls.join_group_call(
                                 chat_id,
                                 AudioVideoPiped(
                                     ytlink,
@@ -307,8 +359,11 @@ async def vplay(c: Client, m: Message):
                                 reply_markup=InlineKeyboardMarkup(buttons),
                                 caption=f"🗂 **Name:** [{songname}]({url}) | `video`\n⏱ **Duration:** `{duration}`\n🧸 **Request by:** {requester}",
                             )
+                            await idle()
+                            os.remove(image)
                         except Exception as ep:
                             await loser.delete()
+                            await remove_active_chat(chat_id)
                             await m.reply_text(f"🚫 error: `{ep}`")
 
 
@@ -317,9 +372,18 @@ async def vstream(c: Client, m: Message):
     await m.delete()
     chat_id = m.chat.id
     user_id = m.from_user.id
+    user_xd = f"[{m.from_user.first_name}](tg://user?id={m.from_user.id})"
+    if chat_id in await blacklisted_chats():
+        await m.reply(
+            "❗️ This chat has blacklisted by sudo user and You're not allowed to use me in this chat."
+        )
+        return await bot.leave_chat(chat_id)
+    if await is_gbanned_user(user_id):
+        await message.reply_text(f"❗️ {user_xd} **You've blocked from using this bot!**")
+        return
     if m.sender_chat:
         return await m.reply_text(
-            "you're an __Anonymous__ Admin !\n\n» revert back to user account from admin rights."
+            "you're an __Anonymous__ user !\n\n» revert back to your real user account to use this bot."
         )
     try:
         aing = await c.get_me()
@@ -360,6 +424,7 @@ async def vstream(c: Client, m: Message):
                     "https://t.me/+", "https://t.me/joinchat/"
                 )
             await user.join_chat(invitelink)
+            await remove_active_chat(chat_id)
     except UserNotParticipant:
         try:
             invitelink = await c.export_chat_invite_link(chat_id)
@@ -368,6 +433,7 @@ async def vstream(c: Client, m: Message):
                     "https://t.me/+", "https://t.me/joinchat/"
                 )
             await user.join_chat(invitelink)
+            await remove_active_chat(chat_id)
         except UserAlreadyParticipant:
             pass
         except Exception as e:
@@ -391,11 +457,11 @@ async def vstream(c: Client, m: Message):
             else:
                 Q = 720
                 await m.reply(
-                    "» __only 720, 480, 360 allowed__ \n💡 **now streaming video in 720p**"
+                    "» only 720, 480, 360 allowed\n\n💡 now streaming video in **720p**"
                 )
             loser = await c.send_message(chat_id, "🔄 **processing stream...**")
         else:
-            await m.reply("**/vstream {link} {720/480/360}**")
+            await m.reply("`/vstream` {link} {720/480/360}")
 
         regex = r"^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+"
         match = re.match(regex, link)
@@ -427,7 +493,9 @@ async def vstream(c: Client, m: Message):
                     amaze = LowQualityVideo()
                 try:
                     await loser.edit("🔄 **Joining vc...**")
-                    await call_py.join_group_call(
+                    await music_on(chat_id)
+                    await add_active_chat(chat_id)
+                    await calls.join_group_call(
                         chat_id,
                         AudioVideoPiped(
                             livelink,
@@ -449,4 +517,5 @@ async def vstream(c: Client, m: Message):
                     )
                 except Exception as ep:
                     await loser.delete()
+                    await remove_active_chat(chat_id)
                     await m.reply_text(f"🚫 error: `{ep}`")
