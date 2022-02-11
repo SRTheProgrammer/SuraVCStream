@@ -1,6 +1,4 @@
-# Copyright (C) 2021 By Sura VC Project
-# Commit Start Date 20/10/2021
-# Finished On 28/10/2021
+# Copyright (C) 2022 By Sura VC Project
 
 import os
 import re
