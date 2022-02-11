@@ -50,6 +50,7 @@
 | `/speedtest` | run server speedtest that you use to run your bot |
 | `/broadcast` | brodcast message to all group that in bot database |
 | `/gban & /ungban` | use this to gban someone and ungban them |
+| `/stats` | use this to get stats of your bot |
 
 
 ## Generate Pyrogram session string from below
