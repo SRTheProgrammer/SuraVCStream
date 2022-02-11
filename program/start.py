@@ -1,3 +1,5 @@
+import asyncio
+
 from datetime import datetime
 from sys import version_info
 from time import time
@@ -12,14 +14,16 @@ from config import (
     UPDATES_CHANNEL,
 )
 from program import __version__
-from driver.surabot import user
+from driver.core import user, bot
 from driver.filters import command, other_filters
 from driver.database.dbchat import add_served_chat, is_served_chat
 from driver.database.dbpunish import is_gbanned_user
-from pyrogram import Client, filters
-from pyrogram import __version__ as pyrover
+from driver.database.dbusers import add_served_user
+from driver.database.dblockchat import blacklisted_chats
+from pyrogram import Client, filters, __version__ as pyrover
+from pyrogram.errors import FloodWait, MessageNotModified
 from pytgcalls import (__version__ as pytover)
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message, ChatJoinRequest
 
 __major__ = 0
 __minor__ = 2
@@ -53,9 +57,13 @@ async def _human_time_duration(seconds):
 @Client.on_message(
     command(["start", f"start@{BOT_USERNAME}"]) & filters.private & ~filters.edited
 )
-async def start_(client: Client, message: Message):
+async def start_(c: Client, message: Message):
+    user_id = message.from_user.id
+    if await is_gbanned_user(user_id):
+        await message.reply_text("❗️ **You've blocked from using this bot!**")
+        return
     await message.reply_text(
-        f"""👋 **Welcome {message.from_user.mention()} !**\n
+         f"""👋 **Welcome {message.from_user.mention()} !**\n
 🤖 [{BOT_NAME}](https://t.me/{BOT_USERNAME}) **Allows you to play music🎶 and video🎥 on groups through the Telegram Group video chat!**
 
 📕 **Find out all the Bot's commands and how they work by clicking on the » 🛠️ Check Commands button!**
@@ -68,14 +76,14 @@ async def start_(client: Client, message: Message):
             [
                 [
                     InlineKeyboardButton(
-                        "➕ Click to Add Me to your group ➕",
+                        "➕ Add me to your Group ➕",
                         url=f"https://t.me/{BOT_USERNAME}?startgroup=true",
                     )
                 ],
-                [InlineKeyboardButton("📕 Read Basic Guide", callback_data="cbhowtouse")],
+                [InlineKeyboardButton("📕 Basic Guide", callback_data="user_guide")],
                 [
-                    InlineKeyboardButton("🛠️ Check Commands", callback_data="cbcmds"),
-                    InlineKeyboardButton("💲Donate", url=f"https://t.me/{OWNER_USERNAME}"),
+                    InlineKeyboardButton("🛠️ Commands", callback_data="command_list"),
+                    InlineKeyboardButton("💲 Donate", url=f"https://t.me/{OWNER_USERNAME}"),
                 ],
                 [
                     InlineKeyboardButton(
@@ -87,7 +95,7 @@ async def start_(client: Client, message: Message):
                 ],
                 [
                     InlineKeyboardButton(
-                       "👉 My Source Code", url="https://github.com/SRTheProgrammer/SuraVCStream"
+                        "👉 My Source Code", url="https://github.com/SRTheProgrammer/SuraVCStream"
                     )
                 ],
                 [    InlineKeyboardButton(
@@ -104,6 +112,10 @@ async def start_(client: Client, message: Message):
     command(["alive", f"alive@{BOT_USERNAME}"]) & filters.group & ~filters.edited
 )
 async def alive(c: Client, message: Message):
+    user_id = message.from_user.id
+    if await is_gbanned_user(user_id):
+        await message.reply_text("❗️ **You've blocked from using this bot!**")
+        return
     chat_id = message.chat.id
     current_time = datetime.utcnow()
     uptime_sec = (current_time - START_TIME).total_seconds()
@@ -112,7 +124,7 @@ async def alive(c: Client, message: Message):
     keyboard = InlineKeyboardMarkup(
         [
             [
-                InlineKeyboardButton("👨🏾‍🤝‍👨🏼 Group", url=f"https://t.me/{GROUP_SUPPORT}"),
+                InlineKeyboardButton("👨🏾‍🤝‍👨🏼Group", url=f"https://t.me/{GROUP_SUPPORT}"),
                 InlineKeyboardButton(
                     "🔗 Channel", url=f"https://t.me/{UPDATES_CHANNEL}"
                 ),
@@ -131,7 +143,11 @@ async def alive(c: Client, message: Message):
 
 
 @Client.on_message(command(["ping", f"ping@{BOT_USERNAME}"]) & ~filters.edited)
-async def ping_pong(client: Client, message: Message):
+async def ping_pong(c: Client, message: Message):
+    user_id = message.from_user.id
+    if await is_gbanned_user(user_id):
+        await message.reply_text("❗️ **You've blocked from using this bot!**")
+        return
     start = time()
     m_reply = await message.reply_text("pinging...")
     delta_ping = time() - start
@@ -139,7 +155,11 @@ async def ping_pong(client: Client, message: Message):
 
 
 @Client.on_message(command(["uptime", f"uptime@{BOT_USERNAME}"]) & ~filters.edited)
-async def get_uptime(client: Client, message: Message):
+async def get_uptime(c: Client, message: Message):
+    user_id = message.from_user.id
+    if await is_gbanned_user(user_id):
+        await message.reply_text("❗️ **You've blocked from using this bot!**")
+        return
     current_time = datetime.utcnow()
     uptime_sec = (current_time - START_TIME).total_seconds()
     uptime = await _human_time_duration(int(uptime_sec))
@@ -148,6 +168,17 @@ async def get_uptime(client: Client, message: Message):
         f"• **uptime:** `{uptime}`\n"
         f"• **start time:** `{START_TIME_ISO}`"
     )
+
+
+@Client.on_chat_join_request()
+async def approve_join_chat(c: Client, m: ChatJoinRequest):
+    if not m.from_user:
+        return
+    try:
+        await c.approve_chat_join_request(m.chat.id, m.from_user.id)
+    except FloodWait as e:
+        await asyncio.sleep(e.x + 2)
+        await c.approve_chat_join_request(m.chat.id, m.from_user.id)
 
 
 @Client.on_message(filters.new_chat_members)
@@ -160,16 +191,21 @@ async def new_chat(c: Client, m: Message):
     ass_uname = (await user.get_me()).username
     bot_id = (await c.get_me()).id
     for member in m.new_chat_members:
+        if chat_id in await blacklisted_chats():
+            await m.reply(
+                "❗️ This chat has blacklisted by sudo user and You're not allowed to use me in this chat."
+            )
+            return await bot.leave_chat(chat_id)
         if member.id == bot_id:
             return await m.reply(
                 "❤️ Thanks for adding me to the **Group** !\n\n"
-                "Appoint me as administrator in the **Group**, otherwise I will not be able to work properly, and don't forget to type `/userbotjoin` to invite the assistant to chat.\n\n"
+                "Appoint me as administrator in the **Group**, otherwise I will not be able to work properly, and don't forget to type `/userbotjoin` for invite the assistant.\n\n"
                 "Once done, then type `/reload`",
                 reply_markup=InlineKeyboardMarkup(
                     [
                         [
-                            InlineKeyboardButton("📣 Channel", url=f"https://t.me/{UPDATES_CHANNEL}"),
-                            InlineKeyboardButton("👨🏾‍🤝‍👨🏼 Support", url=f"https://t.me/{GROUP_SUPPORT}")
+                            InlineKeyboardButton("🔗 Channel", url=f"https://t.me/{UPDATES_CHANNEL}"),
+                            InlineKeyboardButton("💭 Support", url=f"https://t.me/{GROUP_SUPPORT}")
                         ],
                         [
                             InlineKeyboardButton("👤 Assistant", url=f"https://t.me/{ass_uname}")
@@ -179,10 +215,14 @@ async def new_chat(c: Client, m: Message):
             )
 
 
-chat_watcher_group = 5
+chat_watcher_group = 10
 
 @Client.on_message(group=chat_watcher_group)
 async def chat_watcher_func(_, message: Message):
+    if message.from_user:
+        user_id = message.from_user.id
+        await add_served_user(user_id)
+        return
     try:
         userid = message.from_user.id
     except Exception:
