@@ -8,7 +8,7 @@ from config import (
     BOT_NAME,
     BOT_USERNAME,
     GROUP_SUPPORT,
-    OWNER_NAME,
+    OWNER_USERNAME,
     UPDATES_CHANNEL,
 )
 from program import __version__
@@ -75,7 +75,7 @@ async def start_(client: Client, message: Message):
                 [InlineKeyboardButton("📕 Read Basic Guide", callback_data="cbhowtouse")],
                 [
                     InlineKeyboardButton("🛠️ Check Commands", callback_data="cbcmds"),
-                    InlineKeyboardButton("💲Donate", url=f"https://t.me/{OWNER_NAME}"),
+                    InlineKeyboardButton("💲Donate", url=f"https://t.me/{OWNER_USERNAME}"),
                 ],
                 [
                     InlineKeyboardButton(
