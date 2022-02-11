@@ -1,4 +1,4 @@
-# Copyright (C) 2021 By VeezMusicProject
+# Copyright (C) 2022 By SuraVCProject
 
 from driver.queues import QUEUE
 from driver.database.dbpunish import is_gbanned_user
