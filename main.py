@@ -1,6 +1,6 @@
 import asyncio
 from pytgcalls import idle
-from driver.surabot import call_py, bot, user
+from driver.core import call_py, bot, user
 
 
 async def start_bot():
