@@ -1,5 +1,6 @@
-# Copyright (C) 2022 By SuraVCProject
+#Copyright 2022 SuraVCProject
 
+from driver.core import user, bot
 from driver.queues import QUEUE
 from driver.database.dbpunish import is_gbanned_user
 from pyrogram import Client, filters
@@ -7,8 +8,6 @@ from program.utils.inline import menu_markup, stream_markup
 from pyrogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup
 
 from config import (
-    ASSISTANT_USERNAME,
-    BOT_NAME,
     BOT_USERNAME,
     GROUP_SUPPORT,
     OWNER_USERNAME,
@@ -21,12 +20,13 @@ from config import (
 @Client.on_callback_query(filters.regex("home_start"))
 async def start_set(_, query: CallbackQuery):
     user_id = query.from_user.id
+    BOT_NAME = (await bot.get_me()).first_name
     if await is_gbanned_user(user_id):
         await query.answer("❗️ You've blocked from using this bot!", show_alert=True)
         return
     await query.answer("home start")
     await query.edit_message_text(
-         f"""👋 **Welcome [{query.message.chat.first_name}](tg://user?id={query.message.chat.id}) !**\n
+        f"""👋 **Welcome [{query.message.chat.first_name}](tg://user?id={query.message.chat.id}) !**\n
 🤖 [{BOT_NAME}](https://t.me/{BOT_USERNAME}) **Allows you to play music🎶 and video🎥 on groups through the Telegram Group video chat!**
 
 📕 **Find out all the Bot's commands and how they work by clicking on the » 🛠️ Check Commands button!**
@@ -39,13 +39,13 @@ async def start_set(_, query: CallbackQuery):
             [
                 [
                     InlineKeyboardButton(
-                        "➕ Click to Add Me to your group ➕",
+                        "➕Click to Add me to your Group ➕",
                         url=f"https://t.me/{BOT_USERNAME}?startgroup=true",
                     )
                 ],
-                [InlineKeyboardButton("📕 Read Basic Guide", callback_data="cbhowtouse")],
+                [InlineKeyboardButton("📕 Read Basic Guide", callback_data="user_guide")],
                 [
-                    InlineKeyboardButton("🛠️ Check Commands", callback_data="cbcmds"),
+                    InlineKeyboardButton("🛠️ Check Commands", callback_data="command_list"),
                     InlineKeyboardButton("💲Donate", url=f"https://t.me/{OWNER_USERNAME}"),
                 ],
                 [
@@ -58,24 +58,26 @@ async def start_set(_, query: CallbackQuery):
                 ],
                 [
                     InlineKeyboardButton(
-                        "👉 My Source Code", url="https://github.com/SRTheProgrammer/SuraVCStream"
+                        "👉 My Source Code", url="https://github.com/levina-lab/video-stream"
                     )
                 ],
-                [    InlineKeyboardButton(
-                    "❗️⚠️Youtube Channel⚠️❗️", url="https://www.youtube.com/channel/UCCmjxoJe_6T1ota84YH3ikg?sub_confirmation=1"
-                     )
+		[
+                    InlineKeyboardButton(
+                        "❗️⚠️Youtube Channel⚠️❗️", url="https://www.youtube.com/channel/UCCmjxoJe_6T1ota84YH3ikg?sub_confirmation=1"
+                    )
                 ]
             ]
         ),
         disable_web_page_preview=True,
     )
 
+
 @Client.on_callback_query(filters.regex("quick_use"))
 async def quick_set(_, query: CallbackQuery):
     user_id = query.from_user.id
     ass_uname = (await user.get_me()).username
     if await is_gbanned_user(user_id):
-        await query.answer("f"""ℹ️ Quick use Guide bot, please read fully !", show_alert=True)
+        await query.answer("❗️ You've blocked from using this bot!", show_alert=True)
         return
     await query.answer("quick bot usage")
     await query.edit_message_text(
@@ -89,10 +91,12 @@ async def quick_set(_, query: CallbackQuery):
         ),
         disable_web_page_preview=True,
     )
-    
+
+
 @Client.on_callback_query(filters.regex("user_guide"))
 async def guide_set(_, query: CallbackQuery):
     user_id = query.from_user.id
+    ass_uname = (await user.get_me()).username
     if await is_gbanned_user(user_id):
         await query.answer("❗️ You've blocked from using this bot!", show_alert=True)
         return
@@ -102,7 +106,7 @@ async def guide_set(_, query: CallbackQuery):
 1.) First, add this bot to your Group.
 2.) Then, promote this bot as administrator on the Group also give all permissions except Anonymous admin.
 3.) After promoting this bot, type /reload in Group to update the admin data.
-3.) Invite @{ASSISTANT_USERNAME} to your group or type /userbotjoin to invite her, unfortunately the userbot will joined by itself when you type `/play (song name)` or `/vplay (song name)`.
+3.) Invite @{ass_uname} to your group or type /userbotjoin to invite her, unfortunately the userbot will joined by itself when you type `/play (song name)` or `/vplay (song name)`.
 4.) Turn on/Start the video chat first before start to play video/music.
 `- END, EVERYTHING HAS BEEN SETUP -`
 📌 If the userbot not joined to video chat, make sure if the video chat already turned on and the userbot in the chat.
@@ -111,6 +115,7 @@ async def guide_set(_, query: CallbackQuery):
             [[InlineKeyboardButton("🔙 Go Back", callback_data="home_start")]]
         ),
     )
+
 
 @Client.on_callback_query(filters.regex("command_list"))
 async def commands_set(_, query: CallbackQuery):
@@ -144,7 +149,7 @@ All commands can be used with (`! / .`) handler""",
 
 @Client.on_callback_query(filters.regex("user_command"))
 async def user_set(_, query: CallbackQuery):
-	BOT_NAME = (await bot.get_me()).first_name
+    BOT_NAME = (await bot.get_me()).first_name
     user_id = query.from_user.id
     if await is_gbanned_user(user_id):
         await query.answer("❗️ You've blocked from using this bot!", show_alert=True)
@@ -229,7 +234,7 @@ async def sudo_set(_, query: CallbackQuery):
 @Client.on_callback_query(filters.regex("owner_command"))
 async def owner_set(_, query: CallbackQuery):
     user_id = query.from_user.id
-	BOT_NAME = (await bot.get_me()).first_name
+    BOT_NAME = (await bot.get_me()).first_name
     if await is_gbanned_user(user_id):
         await query.answer("❗️ You've blocked from using this bot!", show_alert=True)
         return
