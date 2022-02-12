@@ -111,7 +111,10 @@ async def play(c: Client, m: Message):
         if b.status == "kicked":
             await c.unban_chat_member(chat_id, ubot)
             invitelink = await c.export_chat_invite_link(chat_id)
-            if invitelink.startswith("https://t.me/+"):
+            invitelink = (await c.get_chat(chat_id)).invite_link
+            if not invitelink:
+                await c.export_chat_invite_link(chat_id)
+                invitelink = (await c.get_chat(chat_id)).invite_link
                 invitelink = invitelink.replace(
                     "https://t.me/+", "https://t.me/joinchat/"
                 )
