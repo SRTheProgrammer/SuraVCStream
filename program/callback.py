@@ -75,7 +75,7 @@ async def quick_set(_, query: CallbackQuery):
     user_id = query.from_user.id
     ass_uname = (await user.get_me()).username
     if await is_gbanned_user(user_id):
-        await query.answer("❗️ You've blocked from using this bot!", show_alert=True)
+        await query.answer("f"""ℹ️ Quick use Guide bot, please read fully !", show_alert=True)
         return
     await query.answer("quick bot usage")
     await query.edit_message_text(
