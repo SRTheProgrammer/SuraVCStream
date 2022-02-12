@@ -19,7 +19,7 @@ from config import (
 
 
 @Client.on_callback_query(filters.regex("home_start"))
-async def set_start(_, query: CallbackQuery):
+async def start_set(_, query: CallbackQuery):
     user_id = query.from_user.id
     if await is_gbanned_user(user_id):
         await query.answer("❗️ You've blocked from using this bot!", show_alert=True)
