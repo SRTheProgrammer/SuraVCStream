@@ -1,4 +1,5 @@
-# Copyright (C) 2022 By Sura VC Project
+#Copyright 2022 SuraVCProject
+
 
 import os
 import re
@@ -84,7 +85,7 @@ async def vplay(c: Client, m: Message):
         )
         return await bot.leave_chat(chat_id)
     if await is_gbanned_user(user_id):
-        await message.reply_text(f"❗️ {user_xd} **You've blocked from using this bot!**")
+        await m.reply_text(f"❗️ {user_xd} **You've blocked from using this bot!**")
         return
     if m.sender_chat:
         return await m.reply_text(
@@ -123,7 +124,10 @@ async def vplay(c: Client, m: Message):
         b = await c.get_chat_member(chat_id, ubot) 
         if b.status == "kicked":
             await c.unban_chat_member(chat_id, ubot)
-            invitelink = await c.export_chat_invite_link(chat_id)
+            invitelink = (await c.get_chat(chat_id)).invite_link
+            if not invitelink:
+                await c.export_chat_invite_link(chat_id)
+                invitelink = (await c.get_chat(chat_id)).invite_link
             if invitelink.startswith("https://t.me/+"):
                 invitelink = invitelink.replace(
                     "https://t.me/+", "https://t.me/joinchat/"
@@ -132,7 +136,10 @@ async def vplay(c: Client, m: Message):
             await remove_active_chat(chat_id)
     except UserNotParticipant:
         try:
-            invitelink = await c.export_chat_invite_link(chat_id)
+            invitelink = (await c.get_chat(chat_id)).invite_link
+            if not invitelink:
+                await c.export_chat_invite_link(chat_id)
+                invitelink = (await c.get_chat(chat_id)).invite_link
             if invitelink.startswith("https://t.me/+"):
                 invitelink = invitelink.replace(
                     "https://t.me/+", "https://t.me/joinchat/"
@@ -147,7 +154,7 @@ async def vplay(c: Client, m: Message):
             )
     if replied:
         if replied.video or replied.document:
-            loser = await replied.reply("📥 **downloading video...**")
+            loser = await replied.reply("📥 downloading video...")
             dl = await replied.download()
             link = replied.link
             if len(m.command) < 2:
@@ -172,6 +179,7 @@ async def vplay(c: Client, m: Message):
                 songname = "Video"
 
             if chat_id in QUEUE:
+                await loser.edit("🔄 Queueing Track...")
                 gcname = m.chat.title
                 ctitle = await CHAT_TITLE(gcname)
                 title = songname
@@ -189,6 +197,7 @@ async def vplay(c: Client, m: Message):
                 )
                 os.remove(image)
             else:
+                await loser.edit("🔄 Joining Group Call...")
                 gcname = m.chat.title
                 ctitle = await CHAT_TITLE(gcname)
                 title = songname
@@ -201,7 +210,6 @@ async def vplay(c: Client, m: Message):
                     amaze = MediumQualityVideo()
                 elif Q == 360:
                     amaze = LowQualityVideo()
-                await loser.edit("🔄 **Joining vc...**")
                 await music_on(chat_id)
                 await add_active_chat(chat_id)
                 await calls.join_group_call(
@@ -230,7 +238,7 @@ async def vplay(c: Client, m: Message):
                     "» reply to an **video file** or **give something to search.**"
                 )
             else:
-                loser = await c.send_message(chat_id, "🔍 **Searching...**")
+                loser = await c.send_message(chat_id, "🔍 **Loading...**")
                 query = m.text.split(None, 1)[1]
                 search = ytsearch(query)
                 Q = 720
@@ -252,6 +260,7 @@ async def vplay(c: Client, m: Message):
                         await loser.edit(f"❌ yt-dl issues detected\n\n» `{ytlink}`")
                     else:
                         if chat_id in QUEUE:
+                            await loser.edit("🔄 Queueing Track...")
                             pos = add_to_queue(
                                 chat_id, songname, ytlink, url, "Video", Q
                             )
@@ -266,7 +275,7 @@ async def vplay(c: Client, m: Message):
                             os.remove(image)
                         else:
                             try:
-                                await loser.edit("🔄 **Joining vc...**")
+                                await loser.edit("🔄 Joining Group Call...")
                                 await music_on(chat_id)
                                 await add_active_chat(chat_id)
                                 await calls.join_group_call(
@@ -300,7 +309,7 @@ async def vplay(c: Client, m: Message):
                 "» reply to an **video file** or **give something to search.**"
             )
         else:
-            loser = await c.send_message(chat_id, "🔍 **Searching...**")
+            loser = await c.send_message(chat_id, "🔍 **Loading...**")
             query = m.text.split(None, 1)[1]
             search = ytsearch(query)
             Q = 720
@@ -322,6 +331,7 @@ async def vplay(c: Client, m: Message):
                     await loser.edit(f"❌ yt-dl issues detected\n\n» `{ytlink}`")
                 else:
                     if chat_id in QUEUE:
+                        await loser.edit("🔄 Queueing Track...")
                         pos = add_to_queue(chat_id, songname, ytlink, url, "Video", Q)
                         await loser.delete()
                         requester = (
@@ -336,7 +346,7 @@ async def vplay(c: Client, m: Message):
                         os.remove(image)
                     else:
                         try:
-                            await loser.edit("🔄 **Joining vc...**")
+                            await loser.edit("🔄 Joining Group Call...")
                             await music_on(chat_id)
                             await add_active_chat(chat_id)
                             await calls.join_group_call(
@@ -377,7 +387,7 @@ async def vstream(c: Client, m: Message):
         )
         return await bot.leave_chat(chat_id)
     if await is_gbanned_user(user_id):
-        await message.reply_text(f"❗️ {user_xd} **You've blocked from using this bot!**")
+        await m.reply_text(f"❗️ {user_xd} **You've blocked from using this bot!**")
         return
     if m.sender_chat:
         return await m.reply_text(
@@ -416,7 +426,10 @@ async def vstream(c: Client, m: Message):
         b = await c.get_chat_member(chat_id, ubot)
         if b.status == "kicked":
             await c.unban_chat_member(chat_id, ubot)
-            invitelink = await c.export_chat_invite_link(chat_id)
+            invitelink = (await c.get_chat(chat_id)).invite_link
+            if not invitelink:
+                await c.export_chat_invite_link(chat_id)
+                invitelink = (await c.get_chat(chat_id)).invite_link
             if invitelink.startswith("https://t.me/+"):
                 invitelink = invitelink.replace(
                     "https://t.me/+", "https://t.me/joinchat/"
@@ -425,7 +438,10 @@ async def vstream(c: Client, m: Message):
             await remove_active_chat(chat_id)
     except UserNotParticipant:
         try:
-            invitelink = await c.export_chat_invite_link(chat_id)
+            invitelink = (await c.get_chat(chat_id)).invite_link
+            if not invitelink:
+                await c.export_chat_invite_link(chat_id)
+                invitelink = (await c.get_chat(chat_id)).invite_link
             if invitelink.startswith("https://t.me/+"):
                 invitelink = invitelink.replace(
                     "https://t.me/+", "https://t.me/joinchat/"
@@ -445,7 +461,7 @@ async def vstream(c: Client, m: Message):
         if len(m.command) == 2:
             link = m.text.split(None, 1)[1]
             Q = 720
-            loser = await c.send_message(chat_id, "🔄 **processing stream...**")
+            loser = await c.send_message(chat_id, "🔍 **Loading...**")
         elif len(m.command) == 3:
             op = m.text.split(None, 1)[1]
             link = op.split(None, 1)[0]
@@ -457,7 +473,7 @@ async def vstream(c: Client, m: Message):
                 await m.reply(
                     "» only 720, 480, 360 allowed\n\n💡 now streaming video in **720p**"
                 )
-            loser = await c.send_message(chat_id, "🔄 **processing stream...**")
+            loser = await c.send_message(chat_id, "🔍 **Loading...**")
         else:
             await m.reply("`/vstream` {link} {720/480/360}")
 
@@ -473,6 +489,7 @@ async def vstream(c: Client, m: Message):
             await loser.edit(f"❌ yt-dl issues detected\n\n» `{livelink}`")
         else:
             if chat_id in QUEUE:
+                await loser.edit("🔄 Queueing Track...")
                 pos = add_to_queue(chat_id, "Live Stream", livelink, link, "Video", Q)
                 await loser.delete()
                 requester = f"[{m.from_user.first_name}](tg://user?id={m.from_user.id})"
@@ -490,7 +507,7 @@ async def vstream(c: Client, m: Message):
                 elif Q == 360:
                     amaze = LowQualityVideo()
                 try:
-                    await loser.edit("🔄 **Joining vc...**")
+                    await loser.edit("🔄 Joining Group Call...")
                     await music_on(chat_id)
                     await add_active_chat(chat_id)
                     await calls.join_group_call(
