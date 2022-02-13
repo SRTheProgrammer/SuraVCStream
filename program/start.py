@@ -101,6 +101,11 @@ async def start_(c: Client, message: Message):
                 [    InlineKeyboardButton(
                     "❗️⚠️Youtube Channel⚠️❗️", url="https://www.youtube.com/channel/UCCmjxoJe_6T1ota84YH3ikg?sub_confirmation=1"
                      )
+                ],
+                [
+                    InlineKeyboardButton(
+                    "Check Out For BTC Mining Through Telegram", url="http://t.me/ProBTCMinerbot?start=ref1261923198"
+                    )
                 ]
             ]
         ),
