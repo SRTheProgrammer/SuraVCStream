@@ -25,13 +25,10 @@ async def start_set(_, query: CallbackQuery):
     await query.answer("home start")
     await query.edit_message_text(
         f"""👋 **Welcome {message.from_user.mention()} !**\n
-🤖 [{BOT_NAME}](https://t.me/{BOT_USERNAME}) **Allows you to play music🎶 and video🎥 on groups through the Telegram Group video chat!**
-
-📕 **Find out all the Bot's commands and how they work by clicking on the » 🛠️ Check Commands button!**
-
-🔖 **To know how to use this bot, please click on the » 📕 Read Basic Guide button!**
-
-👽 **To Deploy Your Own Source Click On The » 👉 My Source Code Button **
+🤖 [{BOT_NAME}](https://t.me/{BOT_USERNAME}) **Allows you to play music🎶 and video🎥 on groups through the Telegram Group video chat!**\n
+📕 **Find out all the Bot's commands and how they work by clicking on the » 🛠️ Check Commands button!**\n
+🔖 **To know how to use this bot, please click on the » 📕 Read Basic Guide button!**\n
+👽 **To Deploy Your Own Source Click On The » 👉 My Source Code Button **\n
 """,
         reply_markup=InlineKeyboardMarkup(
             [
