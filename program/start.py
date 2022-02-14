@@ -7,14 +7,14 @@ from time import time
 from config import (
     ALIVE_IMG,
     ALIVE_NAME,
-    BOT_NAME,
     BOT_USERNAME,
     GROUP_SUPPORT,
     OWNER_USERNAME,
     UPDATES_CHANNEL,
 )
+from driver.decorators import check_blacklist
 from program import __version__
-from driver.core import user, bot
+from driver.core import user, bot, me
 from driver.filters import command, other_filters
 from driver.database.dbchat import add_served_chat, is_served_chat
 from driver.database.dbpunish import is_gbanned_user
@@ -57,19 +57,14 @@ async def _human_time_duration(seconds):
 @Client.on_message(
     command(["start", f"start@{BOT_USERNAME}"]) & filters.private & ~filters.edited
 )
+@check_blacklist()
 async def start_(c: Client, message: Message):
-    user_id = message.from_user.id
-    if await is_gbanned_user(user_id):
-        await message.reply_text("❗️ **You've blocked from using this bot!**")
-        return
+    BOT_NAME = me["first_name"]
     await message.reply_text(
-         f"""👋 **Welcome {message.from_user.mention()} !**\n
+        f"""👋 **Welcome {message.from_user.mention()} !**\n
 🤖 [{BOT_NAME}](https://t.me/{BOT_USERNAME}) **Allows you to play music🎶 and video🎥 on groups through the Telegram Group video chat!**
-
 📕 **Find out all the Bot's commands and how they work by clicking on the » 🛠️ Check Commands button!**
-
 🔖 **To know how to use this bot, please click on the » 📕 Read Basic Guide button!**
-
 👽 **To Deploy Your Own Source Click On The » 👉 My Source Code Button **
 """,
         reply_markup=InlineKeyboardMarkup(
@@ -116,22 +111,18 @@ async def start_(c: Client, message: Message):
 @Client.on_message(
     command(["alive", f"alive@{BOT_USERNAME}"]) & filters.group & ~filters.edited
 )
+@check_blacklist()
 async def alive(c: Client, message: Message):
-    user_id = message.from_user.id
-    if await is_gbanned_user(user_id):
-        await message.reply_text("❗️ **You've blocked from using this bot!**")
-        return
     chat_id = message.chat.id
     current_time = datetime.utcnow()
     uptime_sec = (current_time - START_TIME).total_seconds()
     uptime = await _human_time_duration(int(uptime_sec))
     BOT_NAME = (await c.get_me()).first_name
-
-
+    
     keyboard = InlineKeyboardMarkup(
         [
             [
-                InlineKeyboardButton("👨🏾‍🤝‍👨🏼Group", url=f"https://t.me/{GROUP_SUPPORT}"),
+                InlineKeyboardButton("👨🏾‍🤝‍👨🏼 Group", url=f"https://t.me/{GROUP_SUPPORT}"),
                 InlineKeyboardButton(
                     "🔗 Channel", url=f"https://t.me/{UPDATES_CHANNEL}"
                 ),
@@ -150,11 +141,8 @@ async def alive(c: Client, message: Message):
 
 
 @Client.on_message(command(["ping", f"ping@{BOT_USERNAME}"]) & ~filters.edited)
+@check_blacklist()
 async def ping_pong(c: Client, message: Message):
-    user_id = message.from_user.id
-    if await is_gbanned_user(user_id):
-        await message.reply_text("❗️ **You've blocked from using this bot!**")
-        return
     start = time()
     m_reply = await message.reply_text("pinging...")
     delta_ping = time() - start
@@ -162,11 +150,8 @@ async def ping_pong(c: Client, message: Message):
 
 
 @Client.on_message(command(["uptime", f"uptime@{BOT_USERNAME}"]) & ~filters.edited)
+@check_blacklist()
 async def get_uptime(c: Client, message: Message):
-    user_id = message.from_user.id
-    if await is_gbanned_user(user_id):
-        await message.reply_text("❗️ **You've blocked from using this bot!**")
-        return
     current_time = datetime.utcnow()
     uptime_sec = (current_time - START_TIME).total_seconds()
     uptime = await _human_time_duration(int(uptime_sec))
@@ -212,7 +197,7 @@ async def new_chat(c: Client, m: Message):
                     [
                         [
                             InlineKeyboardButton("🔗 Channel", url=f"https://t.me/{UPDATES_CHANNEL}"),
-                            InlineKeyboardButton("💭 Support", url=f"https://t.me/{GROUP_SUPPORT}")
+                            InlineKeyboardButton("🤖 Support", url=f"https://t.me/{GROUP_SUPPORT}")
                         ],
                         [
                             InlineKeyboardButton("👤 Assistant", url=f"https://t.me/{ass_uname}")
