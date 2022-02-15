@@ -1,6 +1,6 @@
 # Copyright (C) 2022 By SuraVCProject
 
-from driver.core import me
+from driver.core import me_bot
 from driver.decorators import check_blacklist
 from driver.queues import QUEUE
 from driver.database.dbpunish import is_gbanned_user
@@ -21,7 +21,7 @@ from config import (
 @Client.on_callback_query(filters.regex("home_start"))
 @check_blacklist()
 async def start_set(_, query: CallbackQuery):
-    BOT_NAME = me["first_name"]
+    BOT_NAME = me_bot.first_name
     await query.answer("home start")
     await query.edit_message_text(
         f"""👋 **Welcome {message.from_user.mention()} !**\n
@@ -95,7 +95,7 @@ async def quick_set(_, query: CallbackQuery):
 @Client.on_callback_query(filters.regex("user_guide"))
 @check_blacklist()
 async def guide_set(_, query: CallbackQuery):
-    ass_uname = me["username"]
+    ass_uname =  me_bot.first_name
     await query.answer("user guide")
     await query.edit_message_text(
         f"""❓ How to use this Bot ?, read the Guide below !
@@ -150,7 +150,7 @@ All commands can be used with (`! / .`) handler""",
 @Client.on_callback_query(filters.regex("user_command"))
 @check_blacklist()
 async def user_set(_, query: CallbackQuery):
-    BOT_NAME = me["first_name"]
+    BOT_NAME =  me_bot.first_name
     await query.answer("basic commands")
     await query.edit_message_text(
         f"""✏️ Command list for all user.
@@ -177,7 +177,7 @@ async def user_set(_, query: CallbackQuery):
 @Client.on_callback_query(filters.regex("admin_command"))
 @check_blacklist()
 async def admin_set(_, query: CallbackQuery):
-    BOT_NAME = me["first_name"]
+    BOT_NAME =  me_bot.first_name
     await query.answer("admin commands")
     await query.edit_message_text(
         f"""✏️ Command list for group admin.
@@ -204,7 +204,7 @@ async def admin_set(_, query: CallbackQuery):
 @check_blacklist()
 async def sudo_set(_, query: CallbackQuery):
     user_id = query.from_user.id
-    BOT_NAME = me["first_name"]
+    BOT_NAME =  me_bot.first_name
     if user_id not in SUDO_USERS:
         await query.answer("⚠️ You don't have permissions to click this button\n\n» This button is reserved for sudo members of this bot.", show_alert=True)
         return
@@ -233,7 +233,7 @@ async def sudo_set(_, query: CallbackQuery):
 @check_blacklist()
 async def owner_set(_, query: CallbackQuery):
     user_id = query.from_user.id
-    BOT_NAME = me["first_name"]
+    BOT_NAME =  me_bot.first_name
     if user_id not in OWNER_ID:
         await query.answer("⚠️ You don't have permissions to click this button\n\n» This button is reserved for owner of this bot.", show_alert=True)
         return
