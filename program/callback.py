@@ -69,7 +69,30 @@ async def start_set(_, query: CallbackQuery):
         disable_web_page_preview=True,
     )     
         
+@Client.on_callback_query(filters.regex("help_command"))
+@check_blacklist
+async def help(_, query: CallbackQuery):
+    BOT_NAME = me_bot.first_name
+    await query.answer("help message")
+    await query.edit_message_text(
+        f""" Click On Below Buttons For Bot Usage""",
+        reply_markup=InlineKeyboardMarkup(
         
+        [
+            [InlineKeyboardButton("🤖 Setting Up This Bot in Group", callback_data="user_guide")],
+        
+            [InlineKeyboardButton("✍️ Quick Use Commands", callback_data="quick_use")],
+            
+            [InlineKeyboardButton("🎀 All Commands", callback_data="command_list")],
+            
+            [InlineKeyboardButton("🔙 Go Back", callback_data="home_start")]
+            
+        ]      
+  ),
+    disable_web_page_preview=True,
+    )
+    
+    
 @Client.on_callback_query(filters.regex("quick_use"))
 @check_blacklist()
 async def quick_set(_, query: CallbackQuery):
@@ -85,7 +108,10 @@ async def quick_set(_, query: CallbackQuery):
 
 ❓ Still Have questions? Contact us in [Support Group](https://t.me/{GROUP_SUPPORT}).""",
         reply_markup=InlineKeyboardMarkup(
-            [[InlineKeyboardButton("🔙 Go Back", callback_data="user_guide")]]
+            [
+                [InlineKeyboardButton("🔙 Go Back to Quick Use", callback_data="user_guide")],
+                [InlineKeyboardButton("🔙 Go Back to Help", callback_data="help_command")]    
+            ]
         ),
         disable_web_page_preview=True,
     )
@@ -116,8 +142,9 @@ Read
                 [
                     InlineKeyboardButton("» Quick use Guide «", callback_data="quick_use")
                 ],[
-                    InlineKeyboardButton("🔙 Go Back", callback_data="home_start")
-                ],
+                    InlineKeyboardButton("🔙 Go Back to Start", callback_data="home_start")
+                ],[
+                    InlineKeyboardButton("🔙 Go Back to Help", callback_data="help_command")
             ]
         ),
     )
@@ -144,8 +171,11 @@ All commands can be used with (`! / .`) handler""",
                     InlineKeyboardButton("Sudo Commands", callback_data="sudo_command"),
                     InlineKeyboardButton("Owner Commands", callback_data="owner_command"),
                 ],[
-                    InlineKeyboardButton("🔙 Go Back", callback_data="home_start")
-                ],
+                    InlineKeyboardButton("🔙 Go Back to Start", callback_data="home_start")
+                ],[
+                    InlineKeyboardButton("🔙 Go Back to Help", callback_data="help_command")
+                ]
+                   
             ]
         ),
     )
