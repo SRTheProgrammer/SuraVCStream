@@ -108,7 +108,7 @@ async def start_(c: Client, message: Message):
     )
 
 @Client.on_message(
-    command(["help", f"help@{BOT_USERNAME}"]) & filters.private & filters.group & ~filters.edited
+    command(["help", f"help@{BOT_USERNAME}"]) & filters.private & filters.group
 )
 @check_blacklist()
 async def help(c: Client, message: Message):
