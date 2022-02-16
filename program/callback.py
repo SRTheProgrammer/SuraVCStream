@@ -145,9 +145,9 @@ Read
                     InlineKeyboardButton("🔙 Go Back to Start", callback_data="home_start")
                 ],[
                     InlineKeyboardButton("🔙 Go Back to Help", callback_data="help_command")
-            ]
-        ),
-    )
+                ]
+            ]   
+      )
 
 
 @Client.on_callback_query(filters.regex("command_list"))
