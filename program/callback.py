@@ -147,7 +147,9 @@ Read
                     InlineKeyboardButton("🔙 Go Back to Help", callback_data="help_command")
                 ]
             ]   
-      )
+      ),
+        disable_web_page_preview=True,
+    )
 
 
 @Client.on_callback_query(filters.regex("command_list"))
