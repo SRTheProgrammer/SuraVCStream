@@ -128,8 +128,9 @@ async def help(c: Client, message: Message):
             
         ]      
   ),
-        disable_web_page_preview=True,
-    )
+  disable_web_page_preview=True
+  
+  
     
 
 @Client.on_message(
