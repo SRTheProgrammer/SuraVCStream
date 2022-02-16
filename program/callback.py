@@ -70,7 +70,7 @@ async def start_set(_, query: CallbackQuery):
     )     
         
 @Client.on_callback_query(filters.regex("help_command"))
-@check_blacklist
+@check_blacklist()
 async def help(_, query: CallbackQuery):
     BOT_NAME = me_bot.first_name
     await query.answer("help message")
