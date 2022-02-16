@@ -111,7 +111,7 @@ async def start_(c: Client, message: Message):
     command(["help", f"help@{BOT_USERNAME}"]) & filters.private & filters.group & ~filters.edited
 )
 @check_blacklist()
-async def start_(c: Client, message: Message):
+async def help(c: Client, message: Message):
     BOT_NAME = me_bot.first_name
     await message.reply_text(
         f""" Click On Below Buttons For Bot Usage""",
