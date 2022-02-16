@@ -77,11 +77,11 @@ async def quick_set(_, query: CallbackQuery):
     await query.edit_message_text(
         f"""ℹ️ Quick use Guide bot, please read fully !
 
-G » /play - Type this with give the song title or youtube link or audio file to play Music. (Remember to don't play YouTube live stream by using this command!, because it will cause unforeseen problems.)
-U
-I » /vplay - Type this with give the song title or youtube link or video file to play Video. (Remember to don't play YouTube live video by using this command!, because it will cause unforeseen problems.)
-D
-E » /vstream - Type this with give the YouTube live stream video link or m3u8 link to play live Video. (Remember to don't play local audio/video files or non-live YouTube video by using this command!, because it will cause unforeseen problems.)
+» /play - Type this with give the song title or youtube link or audio file to play Music. (Remember to don't play YouTube live stream by using this command!, because it will cause unforeseen problems.)
+
+» /vplay - Type this with give the song title or youtube link or video file to play Video. (Remember to don't play YouTube live video by using this command!, because it will cause unforeseen problems.)
+
+» /vstream - Type this with give the YouTube live stream video link or m3u8 link to play live Video. (Remember to don't play local audio/video files or non-live YouTube video by using this command!, because it will cause unforeseen problems.)
 
 ❓ Still Have questions? Contact us in [Support Group](https://t.me/{GROUP_SUPPORT}).""",
         reply_markup=InlineKeyboardMarkup(
@@ -102,9 +102,10 @@ async def guide_set(_, query: CallbackQuery):
 1.) First, add this bot to your Group.
 2.) Then, promote this bot as administrator on the Group also give all permissions except Anonymous admin.
 3.) After promoting this bot, type /reload in Group to update the admin data.
-3.) Invite @{ass_uname} to your group or type /userbotjoin to invite her, unfortunately the userbot will joined by itself when you type `/play (song name)` or `/vplay (song name)`.
+3.) Invite @{ass_uname} to your group or type /userbotjoin to invite her, unfortunately the userbot will joined by itself when you use song playing commands.
 4.) Turn on/Start the video chat first before start to play video/music.
 
+Read 
 `- END, EVERYTHING HAS BEEN SETUP -`
 
 📌 If the userbot not joined to video chat, make sure if the video chat already turned on and the userbot in the chat.
