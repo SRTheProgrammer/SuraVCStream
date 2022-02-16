@@ -1,5 +1,4 @@
-# Copyright (C) 2022 By SuraVCProject
-
+# Copyright (C) 2021 By SuraVCProject
 
 # pyrogram stuff
 import traceback
@@ -72,7 +71,10 @@ async def play_tg_file(c: Client, m: Message, replied: Message = None, link: str
             "» reply to an **audio file** or **give something to search.**"
         )
     if replied.audio or replied.voice:
-        suhu = await replied.reply("📥 downloading audio...")
+        if not link:
+            suhu = await replied.reply("📥 downloading audio...")
+        else:
+            suhu = await m.reply("📥 downloading audio...")
         dl = await replied.download()
         link = replied.link
         songname = "Audio"
@@ -85,7 +87,10 @@ async def play_tg_file(c: Client, m: Message, replied: Message = None, link: str
                 else:
                     songname = replied.audio.file_name[:80]
                 if replied.audio.thumbs:
-                    thumbnail = await c.download_media(replied.audio.thumbs[0].file_id)
+                    if not link:
+                        thumbnail = await c.download_media(replied.audio.thumbs[0].file_id)
+                    else:
+                        thumbnail = await user.download_media(replied.audio.thumbs[0].file_id)
                 duration = convert_seconds(replied.audio.duration)
             elif replied.voice:
                 songname = "Voice Note"
@@ -157,8 +162,6 @@ async def play_tg_file(c: Client, m: Message, replied: Message = None, link: str
         )
 
 
-
-
 @Client.on_message(command(["play", f"play@{BOT_USERNAME}"]) & other_filters)
 @check_blacklist()
 @require_admin(permissions=["can_manage_voice_chats", "can_delete_messages", "can_invite_users"], self=True)
@@ -207,13 +210,7 @@ async def play(c: Client, m: Message):
             )
     if replied:
         if replied.audio or replied.voice:
-            suhu = await replied.reply("📥 downloading audio...")
-            dl = await replied.download()
-            link = replied.link
-            songname = "Audio"
-            thumbnail = f"{IMG_5}"
-            try:
-                await play_tg_file(c, m, replied)
+            await play_tg_file(c, m, replied)
         else:
             if len(m.command) < 2:
                 await m.reply(
