@@ -67,31 +67,8 @@ async def start_set(_, query: CallbackQuery):
             ]
         ),
         disable_web_page_preview=True,
-    )
-
-@Client.on_callback_query(filters.regex("help_command"))
-@check_blacklist()
-async def help_message(_, query: CallbackQuery):
-    await query.answer("help")
-    await query.edit_message_text(
-        f""" Click On Below Buttons For Bot Usage""",
-        reply_markup=InlineKeyboardMarkup(
+    )     
         
-        [
-            [InlineKeyboardButton("🤖 Setting Up This Bot in Group", callback_data="user_guide")],
-        
-            [InlineKeyboardButton("✍️ Quick Use Commands", callback_data="quick_use")],
-            
-            [InlineKeyboardButton("🎀 All Commands", callback_data="command_list")],
-            
-            [InlineKeyboardButton("🔙 Go Back", callback_data="home_start")]
-            
-        ]      
-  ),
-  disable_web_page_preview=True,
-    )  
-        
-      
         
 @Client.on_callback_query(filters.regex("quick_use"))
 @check_blacklist()
@@ -193,6 +170,7 @@ async def user_set(_, query: CallbackQuery):
 » /ping - show the bot ping status
 » /uptime - show the bot uptime status
 » /alive - show the bot alive info (in Group only)
+» /help - to Show Help Message (Full Bot Guide)
 
 ⚡️ __Powered by {BOT_NAME} AI__""",
         reply_markup=InlineKeyboardMarkup(
