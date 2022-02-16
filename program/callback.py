@@ -77,15 +77,15 @@ async def quick_set(_, query: CallbackQuery):
     await query.edit_message_text(
         f"""ℹ️ Quick use Guide bot, please read fully !
 
-👩🏻‍💼 » /play - Type this with give the song title or youtube link or audio file to play Music. (Remember to don't play YouTube live stream by using this command!, because it will cause unforeseen problems.)
+G » /play - Type this with give the song title or youtube link or audio file to play Music. (Remember to don't play YouTube live stream by using this command!, because it will cause unforeseen problems.)
+U
+I » /vplay - Type this with give the song title or youtube link or video file to play Video. (Remember to don't play YouTube live video by using this command!, because it will cause unforeseen problems.)
+D
+E » /vstream - Type this with give the YouTube live stream video link or m3u8 link to play live Video. (Remember to don't play local audio/video files or non-live YouTube video by using this command!, because it will cause unforeseen problems.)
 
-👩🏻‍💼 » /vplay - Type this with give the song title or youtube link or video file to play Video. (Remember to don't play YouTube live video by using this command!, because it will cause unforeseen problems.)
-
-👩🏻‍💼 » /vstream - Type this with give the YouTube live stream video link or m3u8 link to play live Video. (Remember to don't play local audio/video files or non-live YouTube video by using this command!, because it will cause unforeseen problems.)
-
-❓ Have questions? Contact us in [Support Group](https://t.me/{GROUP_SUPPORT}).""",
+❓ Still Have questions? Contact us in [Support Group](https://t.me/{GROUP_SUPPORT}).""",
         reply_markup=InlineKeyboardMarkup(
-            [[InlineKeyboardButton("🔙 Go Back", callback_data="command_list")]]
+            [[InlineKeyboardButton("🔙 Go Back", callback_data="user_guide")]]
         ),
         disable_web_page_preview=True,
     )
@@ -94,7 +94,7 @@ async def quick_set(_, query: CallbackQuery):
 @Client.on_callback_query(filters.regex("user_guide"))
 @check_blacklist()
 async def guide_set(_, query: CallbackQuery):
-    ass_uname =  me_bot.first_name
+    ass_uname = me_bot.first_name
     await query.answer("user guide")
     await query.edit_message_text(
         f"""❓ How to use this Bot ?, read the Guide below !
@@ -111,7 +111,13 @@ async def guide_set(_, query: CallbackQuery):
 
 💡 If you have a follow-up questions about this bot, you can tell it on my support chat here: @{GROUP_SUPPORT}.""",
         reply_markup=InlineKeyboardMarkup(
-            [[InlineKeyboardButton("🔙 Go Back", callback_data="home_start")]]
+            [
+                [
+                    InlineKeyboardButton("» Quick use Guide «", callback_data="quick_use")
+                ],[
+                    InlineKeyboardButton("🔙 Go Back", callback_data="home_start")
+                ],
+            ]
         ),
     )
 
@@ -130,8 +136,6 @@ All commands can be used with (`! / .`) handler""",
         reply_markup=InlineKeyboardMarkup(
             [
                 [
-                    InlineKeyboardButton("» Quick use Guide «", callback_data="quick_use"),
-                ],[
                     InlineKeyboardButton("👮🏻‍♀️ Admins Commands", callback_data="admin_command"),
                 ],[
                     InlineKeyboardButton("👩🏻‍💼 Users Commands", callback_data="user_command"),
@@ -149,7 +153,7 @@ All commands can be used with (`! / .`) handler""",
 @Client.on_callback_query(filters.regex("user_command"))
 @check_blacklist()
 async def user_set(_, query: CallbackQuery):
-    BOT_NAME =  me_bot.first_name
+    BOT_NAME = me_bot.first_name
     await query.answer("basic commands")
     await query.edit_message_text(
         f"""✏️ Command list for all user.
@@ -176,7 +180,7 @@ async def user_set(_, query: CallbackQuery):
 @Client.on_callback_query(filters.regex("admin_command"))
 @check_blacklist()
 async def admin_set(_, query: CallbackQuery):
-    BOT_NAME =  me_bot.first_name
+    BOT_NAME = me_bot.first_name
     await query.answer("admin commands")
     await query.edit_message_text(
         f"""✏️ Command list for group admin.
@@ -203,7 +207,7 @@ async def admin_set(_, query: CallbackQuery):
 @check_blacklist()
 async def sudo_set(_, query: CallbackQuery):
     user_id = query.from_user.id
-    BOT_NAME =  me_bot.first_name
+    BOT_NAME = me_bot.first_name
     if user_id not in SUDO_USERS:
         await query.answer("⚠️ You don't have permissions to click this button\n\n» This button is reserved for sudo members of this bot.", show_alert=True)
         return
@@ -232,7 +236,7 @@ async def sudo_set(_, query: CallbackQuery):
 @check_blacklist()
 async def owner_set(_, query: CallbackQuery):
     user_id = query.from_user.id
-    BOT_NAME =  me_bot.first_name
+    BOT_NAME = me_bot.first_name
     if user_id not in OWNER_ID:
         await query.answer("⚠️ You don't have permissions to click this button\n\n» This button is reserved for owner of this bot.", show_alert=True)
         return
@@ -262,7 +266,7 @@ async def at_set_markup_menu(_, query: CallbackQuery):
     user_id = query.from_user.id
     a = await _.get_chat_member(query.message.chat.id, query.from_user.id)
     if not a.can_manage_voice_chats:
-        return await query.answer("💡 Only admin with manage video chat permission that can tap this button !", show_alert=True)
+        return await query.answer("❗ Only admin with manage video chat permission that can tap this button !", show_alert=True)
     chat_id = query.message.chat.id
     user_id = query.message.from_user.id
     buttons = menu_markup(user_id)
@@ -278,7 +282,7 @@ async def at_set_markup_menu(_, query: CallbackQuery):
 async def is_set_home_menu(_, query: CallbackQuery):
     a = await _.get_chat_member(query.message.chat.id, query.from_user.id)
     if not a.can_manage_voice_chats:
-        return await query.answer("💡 Only admin with manage video chat permission that can tap this button !", show_alert=True)
+        return await query.answer("❗ Only admin with manage video chat permission that can tap this button !", show_alert=True)
     await query.answer("control panel closed")
     user_id = query.message.from_user.id
     buttons = stream_markup(user_id)
@@ -290,7 +294,7 @@ async def is_set_home_menu(_, query: CallbackQuery):
 async def on_close_menu(_, query: CallbackQuery):
     a = await _.get_chat_member(query.message.chat.id, query.from_user.id)
     if not a.can_manage_voice_chats:
-        return await query.answer("💡 Only admin with manage video chat permission that can tap this button !", show_alert=True)
+        return await query.answer("❗ Only admin with manage video chat permission that can tap this button !", show_alert=True)
     await query.message.delete()
 
 
