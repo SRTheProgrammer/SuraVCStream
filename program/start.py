@@ -108,7 +108,7 @@ async def start_(c: Client, message: Message):
     )
 
 @Client.on_message(
-    command["help", f"alive@{BOT_USERNAME}"]) & filters.group & ~filters.edited
+    command(["help", f"alive@{BOT_USERNAME}"]) & filters.group & ~filters.edited
 )
 @check_blacklist()
 async def help(c: Client, message: Message):
@@ -128,7 +128,8 @@ async def help(c: Client, message: Message):
             
         ]      
   ),
-  disable_web_page_preview=True
+    disable_web_page_preview=True,
+    )
   
   
     
