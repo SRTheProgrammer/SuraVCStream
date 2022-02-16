@@ -69,7 +69,30 @@ async def start_set(_, query: CallbackQuery):
         disable_web_page_preview=True,
     )
 
-
+@Client.on_callback_query(filters.regex("help_command"))
+@check_blacklist()
+async def help_message(_, query: CallbackQuery):
+    await query.answer("help")
+    await query.edit_message_text(
+        f""" Click On Below Buttons For Bot Usage""",
+        reply_markup=InlineKeyboardMarkup(
+        
+        [
+            [InlineKeyboardButton("🤖 Setting Up This Bot in Group", callback_data="user_guide")],
+        
+            [InlineKeyboardButton("✍️ Quick Use Commands", callback_data="quick_use")],
+            
+            [InlineKeyboardButton("🎀 All Commands", callback_data="command_list")],
+            
+            [InlineKeyboardButton("🔙 Go Back", callback_data="home_start")]
+            
+        ]      
+  ),
+  disable_web_page_preview=True,
+    )  
+        
+      
+        
 @Client.on_callback_query(filters.regex("quick_use"))
 @check_blacklist()
 async def quick_set(_, query: CallbackQuery):
@@ -97,7 +120,7 @@ async def guide_set(_, query: CallbackQuery):
     ass_uname = me_bot.first_name
     await query.answer("user guide")
     await query.edit_message_text(
-        f"""❓ How to use this Bot ?, read the Guide below !
+        f"""❓ How to Setup This Bot in Group ?, read the Guide below !
 
 1.) First, add this bot to your Group.
 2.) Then, promote this bot as administrator on the Group also give all permissions except Anonymous admin.
