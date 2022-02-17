@@ -106,6 +106,12 @@ async def start_(c: Client, message: Message):
         ),
         disable_web_page_preview=True,
     )
+    await c.send_photo(
+        chat_id,
+        photo=f"{BG_IMG}",
+        caption=alive,
+        reply_markup=keyboard,
+    )
 
 @Client.on_message(
     command(["help", f"help@{BOT_USERNAME}"]) & filters.private & ~filters.edited
@@ -114,7 +120,10 @@ async def start_(c: Client, message: Message):
 async def help(c: Client, message: Message):
     BOT_NAME = me_bot.first_name
     await message.reply_text(
-        f""" Click On Below Buttons For Bot Usage""",
+        f""" ✨ **Hello {message.from_user.mention()} !**\n
+🔷 **To Know How to setup this Bot? Read 🤖 Setting Up This Bot in Group **\n
+🔷 **To Know Play Video/Audio/Live? Read ✍️ Quick Use Commands **\n
+🔷 **To Know Every Single Command Of Bot? Read 🎀 All Commands**\n """,
         reply_markup=InlineKeyboardMarkup(
         
         [
@@ -144,6 +153,54 @@ async def help(c: Client, message: Message):
         disable_web_page_preview=True,
     )
     
+@Client.on_message(
+    command(["ghelp", f"ghelp@{BOT_USERNAME}"]) & filters.group & ~filters.edited
+)
+@check_blacklist()
+async def ghelp(c: Client, message: Message):
+    chat_id = message.chat.id
+    BOT_NAME = me_bot.first_name
+    await message.reply_text(
+        f""" ✨ **Hello {message.from_user.mention()} !**\n
+🔷 **To Know How to setup this Bot? Read 🤖 Setting Up This Bot in Group **\n
+🔷 **To Know Play Video/Audio/Live? Read ✍️ Quick Use Commands **\n
+🔷 **To Know Every Single Command Of Bot? Read 🎀 All Commands**\n """,
+        reply_markup=InlineKeyboardMarkup(
+        
+        [
+            [
+                InlineKeyboardButton(
+                                       "🤖 Setting Up This Bot in Group", callback_data="user_guide"
+                )
+            ],
+            [
+                InlineKeyboardButton( 
+                                       "✍️ Quick Use Commands", callback_data="quick_use"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                                       "🎀 All Commands", callback_data="command_list"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                                       "🔙 Go Back to Start", callback_data="home_start"
+                )
+            ],
+            [
+                InlineKeyboardButton("👨🏾‍🤝‍👨🏼 Group", url=f"https://t.me/{GROUP_SUPPORT}"),
+                InlineKeyboardButton(
+                    "🔗 Channel", url=f"https://t.me/{UPDATES_CHANNEL}"
+                ),
+            ]
+                
+        ]      
+  ),
+        disable_web_page_preview=True,
+    )
+    
+
 
 
 @Client.on_message(
