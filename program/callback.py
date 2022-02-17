@@ -69,13 +69,6 @@ async def start_set(_, query: CallbackQuery):
         ),
         disable_web_page_preview=True,
     )
-    await c.send_photo(
-        chat_Id,
-        photo=f"{BG_IMG}",
-        caption=reply,
-        reply_markup=reply_markup,
-    )
-
         
 @Client.on_callback_query(filters.regex("help_command"))
 @check_blacklist()
