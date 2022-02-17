@@ -82,19 +82,83 @@ async def help(_, query: CallbackQuery):
         reply_markup=InlineKeyboardMarkup(
         
         [
-            [InlineKeyboardButton("🤖 Setting Up This Bot in Group", callback_data="user_guide")],
-        
-            [InlineKeyboardButton("✍️ Quick Use Commands", callback_data="quick_use")],
-            
-            [InlineKeyboardButton("🎀 All Commands", callback_data="command_list")],
-            
-            [InlineKeyboardButton("🔙 Go Back", callback_data="home_start")]
+            [
+                InlineKeyboardButton(
+                    "🤖 Setting Up This Bot in Group", callback_data="user_guide"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    "✍️ Quick Use Commands", callback_data="quick_use"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    "🎀 All Commands", callback_data="command_list"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    "🔙 Go Back", callback_data="home_start"
+                )
+            ],
+            [
+                InlineKeyboardButton("👨🏾‍🤝‍👨🏼 Group", url=f"https://t.me/{GROUP_SUPPORT}"),
+                InlineKeyboardButton(
+                    "🔗 Channel", url=f"https://t.me/{UPDATES_CHANNEL}"
+                ),
+            ]
             
         ]      
   ),
     disable_web_page_preview=True,
     )
     
+
+@Client.on_callback_query(filters.regex("ghelp_command"))
+@check_blacklist()
+async def ghelp(_, query: CallbackQuery):
+    BOT_NAME = me_bot.first_name
+    await query.answer("help message")
+    await query.edit_message_text(
+        f""" ✨ **Hello [{query.message.chat.first_name}](tg://user?id={query.message.chat.id}) !**\n
+🔷 **To Know How to setup this Bot? Read 🤖 Setting Up This Bot in Group **\n
+🔷 **To Know Play Video/Audio/Live? Read ✍️ Quick Use Commands **\n
+🔷 **To Know Every Single Command Of Bot? Read 🎀 All Commands**\n """,
+        reply_markup=InlineKeyboardMarkup(
+        
+        [
+            [
+                InlineKeyboardButton(
+                    "🤖 Setting Up This Bot in Group", callback_data="user_guide"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    "✍️ Quick Use Commands", callback_data="quick_use"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    "🎀 All Commands", callback_data="command_list"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    "🔙 Go Back", callback_data="home_start"
+                )
+            ],
+            [
+                InlineKeyboardButton("👨🏾‍🤝‍👨🏼 Group", url=f"https://t.me/{GROUP_SUPPORT}"),
+                InlineKeyboardButton(
+                    "🔗 Channel", url=f"https://t.me/{UPDATES_CHANNEL}"
+                ),
+            ]
+            
+        ]      
+  ),
+    disable_web_page_preview=True,
+    )
     
 @Client.on_callback_query(filters.regex("quick_use"))
 @check_blacklist()
