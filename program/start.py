@@ -69,7 +69,7 @@ async def start_(c: Client, message: Message):
 🔖 **To know how to use this bot, please click on the » 📕 Read Basic Guide button!**\n
 👽 **To Deploy Your Own Source Click On The » 👉 My Source Code Button **\n
 """,
-        reply_markup=InlineKeyboardMarkup(
+        keyboard=InlineKeyboardMarkup(
             [
                 [
                     InlineKeyboardButton(
@@ -112,7 +112,7 @@ async def start_(c: Client, message: Message):
         chat_Id,
         photo=f"{BG_IMG}",
         caption=reply,
-        reply_markup=reply_markup,
+        reply_markup=keyboard,
     )
 
 @Client.on_message(
