@@ -9,6 +9,7 @@ from pyrogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMa
 
 from config import (
     BOT_USERNAME,
+    BG_IMG,
     GROUP_SUPPORT,
     OWNER_USERNAME,
     UPDATES_CHANNEL,
@@ -30,7 +31,7 @@ async def start_set(_, query: CallbackQuery):
 🔖 **To know how to use this bot, please click on the » 📕 Read Basic Guide button!**\n
 👽 **To Deploy Your Own Source Click On The » 👉 My Source Code Button **\n
 """,
-        reply_markup=InlineKeyboardMarkup(
+        keyboard=InlineKeyboardMarkup(
             [
                 [
                     InlineKeyboardButton(
@@ -73,7 +74,7 @@ async def start_set(_, query: CallbackQuery):
         chat_Id,
         photo=f"{BG_IMG}",
         caption=reply,
-        reply_markup=reply_markup,
+        reply_markup=keyboard,
     )
 
         
