@@ -51,6 +51,9 @@
 | `/broadcast` | brodcast message to all group that in bot database |
 | `/gban & /ungban` | use this to gban someone and ungban them |
 | `/stats` | use this to get stats of your bot |
+| `/help` | to show help message in private chat |
+| `/ghelp` | to show help message in group chats |
+
 
 
 ## Generate Pyrogram session string from below
