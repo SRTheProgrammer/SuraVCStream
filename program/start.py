@@ -111,8 +111,8 @@ async def start_(c: Client, message: Message):
     await c.send_photo(
         chat_Id,
         photo=f"{BG_IMG}",
-        caption=alive,
-        reply_markup=keyboard,
+        caption=start,
+        reply_markup=reply_markup,
     )
 
 @Client.on_message(
