@@ -62,7 +62,7 @@ async def _human_time_duration(seconds):
 async def start_(c: Client, message: Message):
     BOT_NAME = me_bot.first_name
     chat_Id = message.chat.id
-    await message.reply_text(
+    reply = await message.reply_text(
         f"""👋 **Welcome {message.from_user.mention()} !**\n
 🤖 [{BOT_NAME}](https://t.me/{BOT_USERNAME}) **Allows you to play music🎶 and video🎥 on groups through the Telegram Group video chat!**\n
 📕 **Find out all the Bot's commands and how they work by clicking on the » 🛠️ Check Commands button!**\n
@@ -111,7 +111,7 @@ async def start_(c: Client, message: Message):
     await c.send_photo(
         chat_Id,
         photo=f"{BG_IMG}",
-        caption=start,
+        caption=reply,
         reply_markup=reply_markup,
     )
 
