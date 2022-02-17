@@ -61,7 +61,7 @@ async def _human_time_duration(seconds):
 @check_blacklist()
 async def start_(c: Client, message: Message):
     BOT_NAME = me_bot.first_name
-    chat_id = message.chat.id
+    chat_Id = message.chat.id
     await message.reply_text(
         f"""👋 **Welcome {message.from_user.mention()} !**\n
 🤖 [{BOT_NAME}](https://t.me/{BOT_USERNAME}) **Allows you to play music🎶 and video🎥 on groups through the Telegram Group video chat!**\n
@@ -109,7 +109,7 @@ async def start_(c: Client, message: Message):
         disable_web_page_preview=True,
     )
     await c.send_photo(
-        chat_id,
+        chat_Id,
         photo=f"{BG_IMG}",
         caption=alive,
         reply_markup=keyboard,
