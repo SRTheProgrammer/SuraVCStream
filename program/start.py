@@ -146,6 +146,12 @@ async def help(c: Client, message: Message):
                 InlineKeyboardButton(
                                        "🔙 Go Back to Start", callback_data="home_start"
                 )
+            ],
+            [
+                InlineKeyboardButton("👨🏾‍🤝‍👨🏼 Group", url=f"https://t.me/{GROUP_SUPPORT}"),
+                InlineKeyboardButton(
+                    "🔗 Channel", url=f"https://t.me/{UPDATES_CHANNEL}"
+                ),
             ]
             
         ]      
