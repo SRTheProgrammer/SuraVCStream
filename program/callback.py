@@ -75,7 +75,10 @@ async def help(_, query: CallbackQuery):
     BOT_NAME = me_bot.first_name
     await query.answer("help message")
     await query.edit_message_text(
-        f""" Click On Below Buttons For Bot Usage""",
+        f""" ✨ **Hello [{query.message.chat.first_name}](tg://user?id={query.message.chat.id}) !**\n
+            **To Know How to setup this Bot? Read 🤖 Setting Up This Bot in Group **\n
+            **To Know Play Video/Audio/Live? Read ✍️ Quick Use Commands **\n
+            **To Know Every Single Command Of Bot? Read 🎀 All Commands**\n """,
         reply_markup=InlineKeyboardMarkup(
         
         [
@@ -109,7 +112,7 @@ async def quick_set(_, query: CallbackQuery):
 ❓ Still Have questions? Contact us in [Support Group](https://t.me/{GROUP_SUPPORT}).""",
         reply_markup=InlineKeyboardMarkup(
             [
-                [InlineKeyboardButton("🔙 Go Back to Quick Use", callback_data="user_guide")],
+                [InlineKeyboardButton("🔙 Go Back to Bot Setup", callback_data="user_guide")],
                 [InlineKeyboardButton("🔙 Go Back to Help", callback_data="help_command")]    
             ]
         ),
