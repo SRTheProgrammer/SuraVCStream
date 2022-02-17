@@ -123,7 +123,7 @@ async def help(_, query: CallbackQuery):
     )
     
 
-@Client.on_callback_query(filters.regex("ghelp_command"))
+''' @Client.on_callback_query(filters.regex("ghelp_command")) #This is Not Used Now Used In Future Updates
 @check_blacklist()
 async def ghelp(_, query: CallbackQuery):
     BOT_NAME = me_bot.first_name
@@ -166,7 +166,7 @@ async def ghelp(_, query: CallbackQuery):
         ]      
   ),
     disable_web_page_preview=True,
-    )
+    )'''
     
 @Client.on_callback_query(filters.regex("quick_use"))
 @check_blacklist()
