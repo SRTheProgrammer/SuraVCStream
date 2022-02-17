@@ -29,9 +29,8 @@ async def start_set(_, query: CallbackQuery):
 🤖 [{BOT_NAME}](https://t.me/{BOT_USERNAME}) **Allows you to play music🎶 and video🎥 on groups through the Telegram Group video chat!**\n
 📕 **Find out all the Bot's commands and how they work by clicking on the » 🛠️ Check Commands button!**\n
 🔖 **To know how to use this bot, please click on the » 📕 Read Basic Guide button!**\n
-👽 **To Deploy Your Own Source Click On The » 👉 My Source Code Button **\n
-""",
-        keyboard=InlineKeyboardMarkup(
+👽 **To Deploy Your Own Source Click On The » 👉 My Source Code Button **\n """)
+        reply_markup=InlineKeyboardMarkup(
             [
                 [
                     InlineKeyboardButton(
@@ -74,7 +73,7 @@ async def start_set(_, query: CallbackQuery):
         chat_Id,
         photo=f"{BG_IMG}",
         caption=reply,
-        reply_markup=keyboard,
+        reply_markup=reply_markup,
     )
 
         
