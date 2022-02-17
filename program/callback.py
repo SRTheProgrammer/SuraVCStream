@@ -21,6 +21,7 @@ from config import (
 @check_blacklist()
 async def start_set(_, query: CallbackQuery):
     BOT_NAME = me_bot.first_name
+    chat_id = message.chat.id
     await query.answer("home start")
     await query.edit_message_text(
         f"""👋 **Welcome {query.message.from_user.mention()} !**\n
@@ -67,7 +68,14 @@ async def start_set(_, query: CallbackQuery):
             ]
         ),
         disable_web_page_preview=True,
-    )     
+    )
+    await c.send_photo(
+        chat_id,
+        photo=f"{BG_IMG}",
+        caption=alive,
+        reply_markup=keyboard,
+    )
+
         
 @Client.on_callback_query(filters.regex("help_command"))
 @check_blacklist()
