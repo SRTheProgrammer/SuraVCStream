@@ -62,12 +62,12 @@ async def _human_time_duration(seconds):
 async def start_(c: Client, message: Message):
     BOT_NAME = me_bot.first_name
     chat_Id = message.chat.id
-    reply = await message.reply_text(
+    await message.reply_text(
         f"""👋 **Welcome {message.from_user.mention()} !**\n
 🤖 [{BOT_NAME}](https://t.me/{BOT_USERNAME}) **Allows you to play music🎶 and video🎥 on groups through the Telegram Group video chat!**\n
 📕 **Find out all the Bot's commands and how they work by clicking on the » 🛠️ Check Commands button!**\n
 🔖 **To know how to use this bot, please click on the » 📕 Read Basic Guide button!**\n
-👽 **To Deploy Your Own Source Click On The » 👉 My Source Code Button **\n """)
+👽 **To Deploy Your Own Source Click On The » 👉 My Source Code Button **\n """,
         reply_markup=InlineKeyboardMarkup(
             [
                 [
@@ -107,13 +107,7 @@ async def start_(c: Client, message: Message):
         ),
         disable_web_page_preview=True,
     )
-    await c.send_photo(
-        chat_Id,
-        photo=f"{BG_IMG}",
-        caption=reply,
-        reply_markup=reply_markup,
-    )
-
+    
 @Client.on_message(
     command(["help", f"help@{BOT_USERNAME}"]) & filters.private & ~filters.edited
 )
