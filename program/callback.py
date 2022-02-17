@@ -72,8 +72,8 @@ async def start_set(_, query: CallbackQuery):
     await c.send_photo(
         chat_Id,
         photo=f"{BG_IMG}",
-        caption=alive,
-        reply_markup=keyboard,
+        caption=start,
+        reply_markup=reply_markup,
     )
 
         
