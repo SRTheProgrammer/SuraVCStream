@@ -22,7 +22,6 @@ from config import (
 @check_blacklist()
 async def start_set(_, query: CallbackQuery):
     BOT_NAME = me_bot.first_name
-    chat_Id = message.chat.id
     await query.answer("home start")
     await query.edit_message_text(
         f"""👋 **Welcome {query.message.from_user.mention()} !**\n
