@@ -75,7 +75,7 @@ async def help(_, query: CallbackQuery):
     BOT_NAME = me_bot.first_name
     await query.answer("help message")
     await query.edit_message_text(
-        f""" ✨ **Hello [{query.message.chat.first_name}](tg://user?id={query.message.chat.id}) !**\n
+        f""" ✨ **Hello [{query.message.chat.first_name}] !**\n
 🔷 **To Know How to setup this Bot? Read 🤖 Setting Up This Bot in Group **\n
 🔷 **To Know Play Video/Audio/Live? Read ✍️ Quick Use Commands **\n
 🔷 **To Know Every Single Command Of Bot? Read 🎀 All Commands**\n """,
