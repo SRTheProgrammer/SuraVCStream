@@ -51,6 +51,7 @@
 | `/broadcast` | brodcast message to all group that in bot database |
 | `/gban & /ungban` | use this to gban someone and ungban them |
 | `/stats` | use this to get stats of your bot |
+| `/calls` | use this to get active group calls in your database |
 | `/help` | to show help message in private chat |
 | `/ghelp` | to show help message in group chats |
 
@@ -66,6 +67,7 @@ The easy way to host this bot, deploy to Heroku, Change the app country to Europ
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
 ## VPS Deployment 
+(Tutorial On Deploying to VPS is Coming Soon, You Don't Need to Worry)
 Get the best Quality of streaming performance by hosting it on VPS, Steps:
 
 ```sh
