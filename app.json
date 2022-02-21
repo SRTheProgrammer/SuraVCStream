@@ -43,10 +43,6 @@
             "description": "fill with the pyrogram String Session",
             "required": true
         },
-        "BG_IMG": {
-            "description": "paste a telegraph link of your bot bg image (Not Mandatory)",
-            "required": false
-        },
         "MONGODB_URL": {
             "description": "fill with the mongodb url, You must create it first from cloud.mongodb.com For Support Join SuraBotStats",
             "required": true
