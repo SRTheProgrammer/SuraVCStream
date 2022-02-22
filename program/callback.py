@@ -296,6 +296,8 @@ async def admin_set(_, query: CallbackQuery):
 » /reload - reload bot and refresh the admin data
 » /userbotjoin - invite the userbot to join group
 » /userbotleave - order userbot to leave from group
+» /startvc - start/restart the group call
+» /stopvc - stop/discard the group call
 
 ⚡️ __Powered by {BOT_NAME} AI__""",
         reply_markup=InlineKeyboardMarkup(
