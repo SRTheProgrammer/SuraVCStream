@@ -4,9 +4,7 @@ import wget
 import yt_dlp
 import traceback
 import requests
-
 import lyricsgenius
-
 
 from pyrogram import Client, filters
 from pyrogram.types import Message
@@ -91,8 +89,6 @@ async def video_downloader(_, message):
     await message.delete()
     ydl_opts = {
         "format": "best",
-        "keepvideo": True,
-        "prefer-ffmpeg": False,
         "geo-bypass": True,
         "noprogress": True,
         "user-agent": "Mozilla/5.0 (Linux; Android 7.0; k960n_mt6580_32_n) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.101 Safari/537.36",
@@ -146,17 +142,17 @@ async def get_lyric_genius(_, message: Message):
         return await message.reply_text("**usage:**\n\n/lyrics (song name)")
     m = await message.reply_text("🔍 Searching lyrics...")
     query = message.text.split(None, 1)[1]
-    x = "OXaVabSRKQLqwpiYOn-E4Y7k3wj-TNdL5RfDPXlnXhCErbcqVvdCF-WnMR5TBctI"
-    y = lyricsgenius.Genius(x)
-    y.verbose = False
-    S = y.search_song(query, get_full_info=False)
-    if S is None:
+    api = "OXaVabSRKQLqwpiYOn-E4Y7k3wj-TNdL5RfDPXlnXhCErbcqVvdCF-WnMR5TBctI"
+    data = lyricsgenius.Genius(api)
+    data.verbose = False
+    result = data.search_song(query, get_full_info=False)
+    if result is None:
         return await m.edit("❌ `404` lyrics not found")
     xxx = f"""
-**Song Name:** __{query}__
-**Artist Name:** {S.artist}
-**__Lyrics:__**
-{S.lyrics}"""
+**Title song:** {query}
+**Artist name:** {result.artist}
+**Lyrics:**
+{result.lyrics}"""
     if len(xxx) > 4096:
         await m.delete()
         filename = "lyrics.txt"
