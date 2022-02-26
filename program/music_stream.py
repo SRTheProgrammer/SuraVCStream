@@ -1,17 +1,14 @@
-# Copyright (C) 2021 By SuraVCProject
-
-# pyrogram stuff
 import traceback
 
 from pyrogram import Client
 from pyrogram.errors import UserAlreadyParticipant, UserNotParticipant
 from pyrogram.types import InlineKeyboardMarkup, Message
-# pytgcalls stuff
-from pytgcalls import idle
+
 from pytgcalls import StreamType
 from pytgcalls.types.input_stream import AudioPiped
 from pytgcalls.types.input_stream.quality import HighQualityAudio
-# repository stuff
+from pytgcalls.exceptions import NoAudioSourceFound, NoActiveGroupCall, GroupCallNotFound
+
 from driver.decorators import require_admin, check_blacklist
 from program.utils.inline import stream_markup
 from driver.design.thumbnail import thumb
@@ -22,7 +19,7 @@ from driver.core import calls, user, me_user
 from driver.utils import bash, remove_if_exists, from_tg_get_msg
 from driver.database.dbqueue import add_active_chat, remove_active_chat, music_on
 from config import BOT_USERNAME, IMG_5
-# youtube-dl stuff
+
 from youtubesearchpython import VideosSearch
 
 
@@ -38,7 +35,6 @@ def ytsearch(query: str):
     except Exception as e:
         print(e)
         return 0
-
 
 async def ytdl(link: str):
     stdout, stderr = await bash(
@@ -77,7 +73,7 @@ async def play_tg_file(c: Client, m: Message, replied: Message = None, link: str
             suhu = await m.reply("📥 downloading audio...")
         dl = await replied.download()
         link = replied.link
-        songname = "Audio"
+        songname = "music"
         thumbnail = f"{IMG_5}"
         duration = "00:00"
         try:
@@ -93,11 +89,11 @@ async def play_tg_file(c: Client, m: Message, replied: Message = None, link: str
                         thumbnail = await user.download_media(replied.audio.thumbs[0].file_id)
                 duration = convert_seconds(replied.audio.duration)
             elif replied.voice:
-                songname = "Voice Note"
+                songname = "voice note"
                 duration = convert_seconds(replied.voice.duration)
         except BaseException:
             pass
-        # recheck
+
         if not thumbnail:
             thumbnail = f"{IMG_5}"
 
@@ -108,7 +104,7 @@ async def play_tg_file(c: Client, m: Message, replied: Message = None, link: str
             title = songname
             userid = m.from_user.id
             image = await thumb(thumbnail, title, userid, ctitle)
-            pos = add_to_queue(chat_id, songname, dl, link, "Audio", 0)
+            pos = add_to_queue(chat_id, songname, dl, link, "music", 0)
             requester = f"[{m.from_user.first_name}](tg://user?id={m.from_user.id})"
             buttons = stream_markup(user_id)
             await suhu.delete()
@@ -139,7 +135,7 @@ async def play_tg_file(c: Client, m: Message, replied: Message = None, link: str
                     ),
                     stream_type=StreamType().pulse_stream,
                 )
-                add_to_queue(chat_id, songname, dl, link, "Audio", 0)
+                add_to_queue(chat_id, songname, dl, link, "music", 0)
                 await suhu.delete()
                 buttons = stream_markup(user_id)
                 requester = (
@@ -152,13 +148,14 @@ async def play_tg_file(c: Client, m: Message, replied: Message = None, link: str
                             f"⏱️ **Duration:** `{duration}`\n"
                             f"🧸 **Request by:** {requester}",
                 )
-                await idle()
                 remove_if_exists(image)
-            except Exception as e:
+            except (NoActiveGroupCall, GroupCallNotFound):
                 await suhu.delete()
                 await remove_active_chat(chat_id)
                 traceback.print_exc()
-                await m.reply_text(f"🚫 error:\n\n» {e}")
+                await m.reply_text("❌ The bot can't find the Group call or it's inactive.\n\n» Use /startvc command to turn on the Group call !")
+            except BaseException as err:
+                print(err)
     else:
         await m.reply(
             "» reply to an **audio file** or **give something to search.**"
@@ -180,8 +177,12 @@ async def play(c: Client, m: Message):
     try:
         ubot = me_user.id
         b = await c.get_chat_member(chat_id, ubot)
-        if b.status == "kicked":
-            await c.unban_chat_member(chat_id, ubot)
+        if b.status == "banned":
+            try:
+                await m.reply_text("❌ The userbot is banned in this chat, unban the userbot first to be able to play music !")
+                await remove_active_chat(chat_id)
+            except BaseException:
+                pass
             invitelink = (await c.get_chat(chat_id)).invite_link
             if not invitelink:
                 await c.export_chat_invite_link(chat_id)
@@ -224,7 +225,7 @@ async def play(c: Client, m: Message):
                 query = m.text.split(None, 1)[1]
                 search = ytsearch(query)
                 if search == 0:
-                    await suhu.edit("❌ **no results found.**")
+                    await suhu.edit("❌ **no results found**")
                 else:
                     songname = search[0]
                     title = search[0]
@@ -242,7 +243,7 @@ async def play(c: Client, m: Message):
                         if chat_id in QUEUE:
                             await suhu.edit("🔄 Queueing Track...")
                             pos = add_to_queue(
-                                chat_id, songname, ytlink, url, "Audio", 0
+                                chat_id, songname, ytlink, url, "music", 0
                             )
                             await suhu.delete()
                             buttons = stream_markup(user_id)
@@ -266,7 +267,7 @@ async def play(c: Client, m: Message):
                                     ),
                                     stream_type=StreamType().local_stream,
                                 )
-                                add_to_queue(chat_id, songname, ytlink, url, "Audio", 0)
+                                add_to_queue(chat_id, songname, ytlink, url, "music", 0)
                                 await suhu.delete()
                                 buttons = stream_markup(user_id)
                                 requester = (
@@ -277,12 +278,17 @@ async def play(c: Client, m: Message):
                                     reply_markup=InlineKeyboardMarkup(buttons),
                                     caption=f"🗂 **Name:** [{songname}]({url}) | `music`\n**⏱ Duration:** `{duration}`\n🧸 **Request by:** {requester}",
                                 )
-                                await idle()
                                 remove_if_exists(image)
-                            except Exception as ep:
+                            except (NoActiveGroupCall, GroupCallNotFound):
                                 await suhu.delete()
                                 await remove_active_chat(chat_id)
-                                await m.reply_text(f"🚫 error: `{ep}`")
+                                await m.reply_text("❌ The bot can't find the Group call or it's inactive.\n\n» Use /startvc command to turn on the Group call !")
+                            except NoAudioSourceFound:
+                                await suhu.delete()
+                                await remove_active_chat(chat_id)
+                                await m.reply_text("❌ The content you provide to play has no audio source")
+                            except BaseException as err:
+                                print(err)
 
     else:
         if len(m.command) < 2:
@@ -299,7 +305,7 @@ async def play(c: Client, m: Message):
             query = m.text.split(None, 1)[1]
             search = ytsearch(query)
             if search == 0:
-                await suhu.edit("❌ **no results found.**")
+                await suhu.edit("❌ **no results found**")
             else:
                 songname = search[0]
                 title = search[0]
@@ -316,7 +322,7 @@ async def play(c: Client, m: Message):
                 else:
                     if chat_id in QUEUE:
                         await suhu.edit("🔄 Queueing Track...")
-                        pos = add_to_queue(chat_id, songname, ytlink, url, "Audio", 0)
+                        pos = add_to_queue(chat_id, songname, ytlink, url, "music", 0)
                         await suhu.delete()
                         requester = f"[{m.from_user.first_name}](tg://user?id={m.from_user.id})"
                         buttons = stream_markup(user_id)
@@ -339,7 +345,7 @@ async def play(c: Client, m: Message):
                                 ),
                                 stream_type=StreamType().local_stream,
                             )
-                            add_to_queue(chat_id, songname, ytlink, url, "Audio", 0)
+                            add_to_queue(chat_id, songname, ytlink, url, "music", 0)
                             await suhu.delete()
                             requester = f"[{m.from_user.first_name}](tg://user?id={m.from_user.id})"
                             buttons = stream_markup(user_id)
@@ -348,9 +354,14 @@ async def play(c: Client, m: Message):
                                 reply_markup=InlineKeyboardMarkup(buttons),
                                 caption=f"🗂 **Name:** [{songname}]({url}) | `music`\n**⏱ Duration:** `{duration}`\n🧸 **Request by:** {requester}",
                             )
-                            await idle()
                             remove_if_exists(image)
-                        except Exception as ep:
+                        except (NoActiveGroupCall, GroupCallNotFound):
                             await suhu.delete()
                             await remove_active_chat(chat_id)
-                            await m.reply_text(f"🚫 error: `{ep}`")
+                            await m.reply_text("❌ The bot can't find the Group call or it's inactive.\n\n» Use /startvc command to turn on the Group call !")
+                        except NoAudioSourceFound:
+                            await suhu.delete()
+                            await remove_active_chat(chat_id)
+                            await m.reply_text("❌ The content you provide to play has no audio source.\n\n» Try to play another song or try again later !")
+                        except BaseException as err:
+                            print(err)
