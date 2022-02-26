@@ -1,22 +1,27 @@
-# Copyright (C) 2021 Veez Project
+# Copyright (C) 2021 SuraVCProject
 
+import os
 import re
 import uuid
 import socket
-
 import psutil
 import platform
+
 from config import BOT_USERNAME
+
+from program import LOGS
+from driver.core import me_bot
 from driver.filters import command
-from pyrogram import Client, filters
+from driver.utils import remove_if_exists
 from driver.decorators import sudo_users_only, humanbytes
 
+from pyrogram import Client, filters
+from pyrogram.types import Message
 
-# FETCH SYSINFO
 
 @Client.on_message(command(["sysinfo", f"sysinfo@{BOT_USERNAME}"]) & ~filters.edited)
 @sudo_users_only
-async def give_sysinfo(client, message):
+async def give_sysinfo(c: Client, message: Message):
     splatform = platform.system()
     platform_release = platform.release()
     platform_version = platform.version()
@@ -51,3 +56,22 @@ async def give_sysinfo(client, message):
 **DISK :** `{disk}`
     """
     await message.reply(somsg)
+
+
+@Client.on_message(command(["logs", f"logs@{BOT_USERNAME}"]) & ~filters.edited)
+@sudo_users_only
+async def get_bot_logs(c: Client, m: Message):
+    bot_log_path = f'streambot-logs-{me_bot.id}.txt'
+    if os.path.exists(bot_log_path):
+        try:
+            await m.reply_document(
+                bot_log_path,
+                quote=True,
+                caption='📄 This is the bot logs',
+            )
+            remove_if_exists(bot_log_path)
+        except BaseException as err:
+            LOGS.info(f'[ERROR]: {err}')
+    else:
+        if not os.path.exists(bot_log_path):
+            await m.reply_text('❌ no logs found !')
