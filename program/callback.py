@@ -1,10 +1,11 @@
 # Copyright (C) 2022 By SuraVCProject
 
-from driver.core import me_bot
-from driver.decorators import check_blacklist
+from driver.core import me_bot, me_user
 from driver.queues import QUEUE
-from pyrogram import Client, filters
+from driver.decorators import check_blacklist
 from program.utils.inline import menu_markup, stream_markup
+
+from pyrogram import Client, filters
 from pyrogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup
 
 from config import (
@@ -21,11 +22,10 @@ from config import (
 @Client.on_callback_query(filters.regex("home_start"))
 @check_blacklist()
 async def start_set(_, query: CallbackQuery):
-    BOT_NAME = me_bot.first_name
     await query.answer("home start")
     await query.edit_message_text(
         f"""👋 **Welcome {query.message.from_user.mention()} !**\n
-🤖 [{BOT_NAME}](https://t.me/{BOT_USERNAME}) **Allows you to play music🎶 and video🎥 on groups through the Telegram Group video chat!**\n
+🤖 [{me_bot.first_name}](https://t.me/{BOT_USERNAME}) **Allows you to play music🎶 and video🎥 on groups through the Telegram Group video chat!**\n
 📕 **Find out all the Bot's commands and how they work by clicking on the » 🛠️ Check Commands button!**\n
 🔖 **To know how to use this bot, please click on the » 📕 Read Basic Guide button!**\n
 👽 **To Deploy Your Own Source Click On The » 👉 My Source Code Button **\n """,
@@ -187,7 +187,6 @@ async def quick_set(_, query: CallbackQuery):
 @Client.on_callback_query(filters.regex("user_guide"))
 @check_blacklist()
 async def guide_set(_, query: CallbackQuery):
-    ass_uname = me_bot.first_name
     await query.answer("user guide")
     await query.edit_message_text(
         f"""❓ How to Setup This Bot in Group ?, read the Guide below !
@@ -195,7 +194,7 @@ async def guide_set(_, query: CallbackQuery):
 1.) First, add this bot to your Group.
 2.) Then, promote this bot as administrator on the Group also give all permissions except Anonymous admin.
 3.) After promoting this bot, type /reload in Group to update the admin data.
-3.) Invite @{ass_uname} to your group or type /userbotjoin to invite her, unfortunately the userbot will joined by itself when you use song playing commands.
+3.) Invite @{me_user.username} to your group or type /userbotjoin to invite her, unfortunately the userbot will joined by itself when you use song playing commands.
 4.) Turn on/Start the video chat first before start to play video/music.
 
 Read 
