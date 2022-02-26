@@ -1,17 +1,19 @@
 import asyncio
+
+from program import LOGS
 from pytgcalls import idle
 from driver.core import calls, bot, user
 
 
 async def start_bot():
     await bot.start()
-    print("[INFO]: BOT & UBOT CLIENT STARTED !!")
+    LOGS.info("[INFO]: BOT & USERBOT CLIENT STARTED !!")
     await calls.start()
-    print("[INFO]: PY-TGCALLS CLIENT STARTED !!")
+    LOGS.info("[INFO]: PY-TGCALLS CLIENT STARTED !!")
     await user.join_chat("SuraBotSupport")
     await user.join_chat("SuraBotStats")
     await idle()
-    print("[INFO]: STOPPING BOT & USERBOT")
+    LOGS.info("[INFO]: BOT & USERBOT STOPPED !!")
     await bot.stop()
 
 loop = asyncio.get_event_loop()
