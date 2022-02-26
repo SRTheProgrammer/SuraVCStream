@@ -6,14 +6,15 @@ import asyncio
 from pyrogram import Client
 from pyrogram.types import Message
 from pyrogram.errors import FloodWait
+
 from driver.core import me_bot
 from driver.filters import command, other_filters
 from driver.decorators import bot_creator
 from driver.database.dbchat import get_served_chats
 from driver.database.dbpunish import add_gban_user, is_gbanned_user, remove_gban_user
 
-
 from config import OWNER_ID, SUDO_USERS, BOT_USERNAME as bn
+
 
 @Client.on_message(command(["gban", f"gban@{bn}"]) & other_filters)
 @bot_creator
@@ -155,9 +156,23 @@ async def ungban_global(c: Client, message: Message):
             if not is_gbanned:
                 await message.reply_text("This user is not gbanned !")
             else:
-                await c.unban_chat_member(chat_id, user.id)
+                msg = await message.reply_text("» ungbanning user...")
                 await remove_gban_user(user.id)
-                await message.reply_text("✅ This user has ungbanned")
+                served_chats = []
+                chats = await get_served_chats()
+                for chat in chats:
+                    served_chats.append(int(chat["chat_id"]))
+                number_of_chats = 0
+                for num in served_chats:
+                    try:
+                        await c.unban_chat_member(num, user.id)
+                        number_of_chats += 1
+                        await asyncio.sleep(1)
+                    except FloodWait as e:
+                        await asyncio.sleep(int(e.x))
+                    except BaseException:
+                        pass
+                await msg.edit_text("✅ This user has ungbanned")
         return
     from_user_id = message.from_user.id
     user_id = message.reply_to_message.from_user.id
@@ -176,6 +191,20 @@ async def ungban_global(c: Client, message: Message):
         if not is_gbanned:
             await message.reply_text("This user is not gbanned !")
         else:
-            await c.unban_chat_member(chat_id, user_id)
+            msg = await message.reply_text("» ungbanning user...")
             await remove_gban_user(user_id)
-            await message.reply_text("✅ This user has ungbanned")
+            served_chats = []
+            chats = await get_served_chats()
+            for chat in chats:
+                served_chats.append(int(chat["chat_id"]))
+            number_of_chats = 0
+            for num in served_chats:
+                try:
+                    await c.unban_chat_member(num, user_id)
+                    number_of_chats += 1
+                    await asyncio.sleep(1)
+                except FloodWait as e:
+                    await asyncio.sleep(int(e.x))
+                except BaseException:
+                    pass
+                await msg.edit_text("✅ This user has ungbanned")
