@@ -1,17 +1,17 @@
 #Copyright 2022 SuraVCProject
 
 from config import BOT_USERNAME
+
+from pyrogram import Client
 from pyrogram.types import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,
     Message,
 )
-from pyrogram import Client
 
 from driver.decorators import check_blacklist
 from driver.queues import QUEUE, get_queue
 from driver.filters import command, other_filters
-
 
 
 keyboard = InlineKeyboardMarkup(
