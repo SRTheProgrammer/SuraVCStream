@@ -1,12 +1,9 @@
-#Copyright 2022 SuraVCProject
-
-
-
+# Copyright 2022 Sura VC Project
 
 import re
 import asyncio
 import traceback
-# repository stuff
+
 from config import BOT_USERNAME, IMG_1, IMG_2, IMG_5
 from driver.decorators import require_admin, check_blacklist
 from program.utils.inline import stream_markup
@@ -17,12 +14,11 @@ from driver.queues import QUEUE, add_to_queue
 from driver.core import calls, user, me_user
 from driver.database.dbqueue import add_active_chat, remove_active_chat, music_on
 from driver.utils import remove_if_exists, from_tg_get_msg
-# pyrogram stuff
+
 from pyrogram import Client
 from pyrogram.errors import UserAlreadyParticipant, UserNotParticipant
 from pyrogram.types import InlineKeyboardMarkup, Message
-# py-tgcalls stuff
-from pytgcalls import idle
+
 from pytgcalls import StreamType
 from pytgcalls.types.input_stream import AudioVideoPiped
 from pytgcalls.types.input_stream.quality import (
@@ -31,7 +27,8 @@ from pytgcalls.types.input_stream.quality import (
     LowQualityVideo,
     MediumQualityVideo,
 )
-# youtube-dl stuff
+from pytgcalls.exceptions import NoVideoSourceFound, NoActiveGroupCall, GroupCallNotFound
+
 from youtubesearchpython import VideosSearch
 
 
@@ -105,7 +102,7 @@ async def play_tg_file(c: Client, m: Message, replied: Message = None, link: str
                 Q = int(pq)
             else:
                 await loser.edit(
-                    "» only 720, 480, 360 allowed\n\n💡 now streaming video in **720p**"
+                    "Streaming the local video in 720p quality"
                 )
         try:
             if replied.video:
@@ -114,7 +111,7 @@ async def play_tg_file(c: Client, m: Message, replied: Message = None, link: str
             elif replied.document:
                 songname = replied.document.file_name[:80]
         except BaseException:
-            songname = "Video"
+            songname = "video"
 
         if chat_id in QUEUE:
             await loser.edit("🔄 Queueing Track...")
@@ -124,7 +121,7 @@ async def play_tg_file(c: Client, m: Message, replied: Message = None, link: str
             userid = m.from_user.id
             thumbnail = f"{IMG_5}"
             image = await thumb(thumbnail, title, userid, ctitle)
-            pos = add_to_queue(chat_id, songname, dl, link, "Video", Q)
+            pos = add_to_queue(chat_id, songname, dl, link, "video", Q)
             await loser.delete()
             requester = f"[{m.from_user.first_name}](tg://user?id={m.from_user.id})"
             buttons = stream_markup(user_id)
@@ -138,6 +135,7 @@ async def play_tg_file(c: Client, m: Message, replied: Message = None, link: str
             )
             remove_if_exists(image)
         else:
+         try:
             await loser.edit("🔄 Joining Group Call...")
             gcname = m.chat.title
             ctitle = await CHAT_TITLE(gcname)
@@ -162,7 +160,7 @@ async def play_tg_file(c: Client, m: Message, replied: Message = None, link: str
                 ),
                 stream_type=StreamType().pulse_stream,
             )
-            add_to_queue(chat_id, songname, dl, link, "Video", Q)
+            add_to_queue(chat_id, songname, dl, link, "video", Q)
             await loser.delete()
             requester = f"[{m.from_user.first_name}](tg://user?id={m.from_user.id})"
             buttons = stream_markup(user_id)
@@ -173,8 +171,14 @@ async def play_tg_file(c: Client, m: Message, replied: Message = None, link: str
                         f"⏱️ **Duration:** `{duration}`\n"
                         f"🧸 **Request by:** {requester}",
             )
-            await idle()
             remove_if_exists(image)
+         except (NoActiveGroupCall, GroupCallNotFound):
+            await loser.delete()
+            await remove_active_chat(chat_id)
+            traceback.print_exc()
+            await m.reply_text("❌ The bot can't find the Group call or it's inactive.\n\n» Use /startvc command to turn on the Group call !")
+         except BaseException as err:
+            print(err)
     else:
         await m.reply(
             "» reply to an **video file** or **give something to search.**"
@@ -195,9 +199,13 @@ async def vplay(c: Client, m: Message):
         )
     try:
         ubot = me_user.id
-        b = await c.get_chat_member(chat_id, ubot) 
-        if b.status == "kicked":
-            await c.unban_chat_member(chat_id, ubot)
+        b = await c.get_chat_member(chat_id, ubot)
+        if b.status == "banned":
+            try:
+                await m.reply_text("❌ The userbot is banned in this chat, unban the userbot first to be able to play music !")
+                await remove_active_chat(chat_id)
+            except BaseException:
+                pass
             invitelink = (await c.get_chat(chat_id)).invite_link
             if not invitelink:
                 await c.export_chat_invite_link(chat_id)
@@ -253,14 +261,14 @@ async def vplay(c: Client, m: Message):
                     gcname = m.chat.title
                     ctitle = await CHAT_TITLE(gcname)
                     image = await thumb(thumbnail, title, userid, ctitle)
-                    suravc, ytlink = await ytdl(url)
-                    if sura == 0:
+                    veez, ytlink = await ytdl(url)
+                    if veez == 0:
                         await loser.edit(f"❌ yt-dl issues detected\n\n» `{ytlink}`")
                     else:
                         if chat_id in QUEUE:
                             await loser.edit("🔄 Queueing Track...")
                             pos = add_to_queue(
-                                chat_id, songname, ytlink, url, "Video", Q
+                                chat_id, songname, ytlink, url, "video", Q
                             )
                             await loser.delete()
                             requester = f"[{m.from_user.first_name}](tg://user?id={m.from_user.id})"
@@ -285,7 +293,7 @@ async def vplay(c: Client, m: Message):
                                     ),
                                     stream_type=StreamType().local_stream,
                                 )
-                                add_to_queue(chat_id, songname, ytlink, url, "Video", Q)
+                                add_to_queue(chat_id, songname, ytlink, url, "video", Q)
                                 await loser.delete()
                                 requester = f"[{m.from_user.first_name}](tg://user?id={m.from_user.id})"
                                 buttons = stream_markup(user_id)
@@ -294,12 +302,21 @@ async def vplay(c: Client, m: Message):
                                     reply_markup=InlineKeyboardMarkup(buttons),
                                     caption=f"🗂 **Name:** [{songname}]({url}) | `video`\n⏱ **Duration:** `{duration}`\n🧸 **Request by:** {requester}",
                                 )
-                                await idle()
                                 remove_if_exists(image)
-                            except Exception as ep:
+                            except (NoActiveGroupCall, GroupCallNotFound):
                                 await loser.delete()
                                 await remove_active_chat(chat_id)
-                                await m.reply_text(f"🚫 error: `{ep}`")
+                                await m.reply_text("❌ The bot can't find the Group call or it's inactive.\n\n» Use /startvc command to turn on the Group call !")
+                            except NoVideoSourceFound:
+                                await loser.delete()
+                                await remove_active_chat(chat_id)
+                                await m.reply_text("❌ The content you provide to play has no video source")
+                            except NoAudioSourceFound:
+                                await loser.delete()
+                                await remove_active_chat(chat_id)
+                                await m.reply_text("❌ The content you provide to play has no audio source")
+                            except BaseException as err:
+                                print(err)
 
     else:
         if len(m.command) < 2:
@@ -329,13 +346,13 @@ async def vplay(c: Client, m: Message):
                 gcname = m.chat.title
                 ctitle = await CHAT_TITLE(gcname)
                 image = await thumb(thumbnail, title, userid, ctitle)
-                suravc, ytlink = await ytdl(url)
-                if suravc == 0:
+                veez, ytlink = await ytdl(url)
+                if veez == 0:
                     await loser.edit(f"❌ yt-dl issues detected\n\n» `{ytlink}`")
                 else:
                     if chat_id in QUEUE:
                         await loser.edit("🔄 Queueing Track...")
-                        pos = add_to_queue(chat_id, songname, ytlink, url, "Video", Q)
+                        pos = add_to_queue(chat_id, songname, ytlink, url, "video", Q)
                         await loser.delete()
                         requester = (
                             f"[{m.from_user.first_name}](tg://user?id={m.from_user.id})"
@@ -361,7 +378,7 @@ async def vplay(c: Client, m: Message):
                                 ),
                                 stream_type=StreamType().local_stream,
                             )
-                            add_to_queue(chat_id, songname, ytlink, url, "Video", Q)
+                            add_to_queue(chat_id, songname, ytlink, url, "video", Q)
                             await loser.delete()
                             requester = f"[{m.from_user.first_name}](tg://user?id={m.from_user.id})"
                             buttons = stream_markup(user_id)
@@ -370,12 +387,21 @@ async def vplay(c: Client, m: Message):
                                 reply_markup=InlineKeyboardMarkup(buttons),
                                 caption=f"🗂 **Name:** [{songname}]({url}) | `video`\n⏱ **Duration:** `{duration}`\n🧸 **Request by:** {requester}",
                             )
-                            await idle()
                             remove_if_exists(image)
-                        except Exception as ep:
+                        except (NoActiveGroupCall, GroupCallNotFound):
                             await loser.delete()
                             await remove_active_chat(chat_id)
-                            await m.reply_text(f"🚫 error: `{ep}`")
+                            await m.reply_text("❌ The bot can't find the Group call or it's inactive.\n\n» Use /startvc command to turn on the Group call !")
+                        except NoVideoSourceFound:
+                            await loser.delete()
+                            await remove_active_chat(chat_id)
+                            await m.reply_text("❌ The content you provide to play has no video source")
+                        except NoAudioSourceFound:
+                            await loser.delete()
+                            await remove_active_chat(chat_id)
+                            await m.reply_text("❌ The content you provide to play has no audio source")
+                        except BaseException as err:
+                            print(err)
 
 
 @Client.on_message(command(["vstream", f"vstream@{BOT_USERNAME}"]) & other_filters)
@@ -392,18 +418,21 @@ async def vstream(c: Client, m: Message):
     try:
         ubot = me_user.id
         b = await c.get_chat_member(chat_id, ubot)
-        if b.status == "kicked":
-            await c.unban_chat_member(chat_id, ubot)
+        if b.status == "banned":
+            await m.reply_text("❌ The userbot is banned in this chat, unban the userbot first to be able to play music !")
+            return
+        invitelink = (await c.get_chat(chat_id)).invite_link
+        if not invitelink:
+            await c.export_chat_invite_link(chat_id)
             invitelink = (await c.get_chat(chat_id)).invite_link
-            if not invitelink:
-                await c.export_chat_invite_link(chat_id)
-                invitelink = (await c.get_chat(chat_id)).invite_link
-            if invitelink.startswith("https://t.me/+"):
-                invitelink = invitelink.replace(
-                    "https://t.me/+", "https://t.me/joinchat/"
-                )
+        if invitelink.startswith("https://t.me/+"):
+            invitelink = invitelink.replace(
+                "https://t.me/+", "https://t.me/joinchat/"
+            )
             await user.join_chat(invitelink)
             await remove_active_chat(chat_id)
+    except UserAlreadyParticipant:
+        pass
     except UserNotParticipant:
         try:
             invitelink = (await c.get_chat(chat_id)).invite_link
@@ -425,48 +454,52 @@ async def vstream(c: Client, m: Message):
             )
 
     if len(m.command) < 2:
-        await m.reply("» give me a live-link/m3u8 url/youtube link to stream.")
+        await m.reply("» Give me a youtube live url/m3u8 url to stream.")
     else:
         if len(m.command) == 2:
-            link = m.text.split(None, 1)[1]
             Q = 720
+            url = m.text.split(None, 1)[1]
+            search = ytsearch(url)
             loser = await c.send_message(chat_id, "🔍 **Loading...**")
         elif len(m.command) == 3:
             op = m.text.split(None, 1)[1]
-            link = op.split(None, 1)[0]
+            url = op.split(None, 1)[0]
             quality = op.split(None, 1)[1]
+            search = ytsearch(op)
             if quality == "720" or "480" or "360":
                 Q = int(quality)
             else:
                 Q = 720
                 await m.reply(
-                    "» only 720, 480, 360 allowed\n\n💡 now streaming video in **720p**"
+                    "» Streaming the live video in 720p quality"
                 )
             loser = await c.send_message(chat_id, "🔍 **Loading...**")
         else:
-            await m.reply("`/vstream` {link} {720/480/360}")
+            await m.reply(f"`/vstream` {url} (720/480/360)")
 
         regex = r"^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+"
-        match = re.match(regex, link)
-        if match:
-            suravc, livelink = await ytdl(link)
-        else:
-            livelink = link
-            suravc = 1
+        match = re.match(regex, url)
 
-        if suravc == 0:
+        if match:
+            veez, livelink = await ytdl(url)
+        else:
+            livelink = url
+            veez = 1
+
+        if veez == 0:
             await loser.edit(f"❌ yt-dl issues detected\n\n» `{livelink}`")
         else:
+            songname = search[0]
             if chat_id in QUEUE:
                 await loser.edit("🔄 Queueing Track...")
-                pos = add_to_queue(chat_id, "Live Stream", livelink, link, "Video", Q)
+                pos = add_to_queue(chat_id, songname, livelink, url, "video", Q)
                 await loser.delete()
                 requester = f"[{m.from_user.first_name}](tg://user?id={m.from_user.id})"
                 buttons = stream_markup(user_id)
                 await m.reply_photo(
                     photo=f"{IMG_1}",
                     reply_markup=InlineKeyboardMarkup(buttons),
-                    caption=f"💡 **Track added to queue »** `{pos}`\n\n💭 **Chat:** `{chat_id}`\n🧸 **Request by:** {requester}",
+                    caption=f"💡 **Track added to queue »** `{pos}`\n\n🗂 **Name:** [{songname}]({url}) | `live`\n🧸 **Requested by:** {requester}",
                 )
             else:
                 if Q == 720:
@@ -488,7 +521,7 @@ async def vstream(c: Client, m: Message):
                         ),
                         stream_type=StreamType().live_stream,
                     )
-                    add_to_queue(chat_id, "Live Stream", livelink, link, "Video", Q)
+                    add_to_queue(chat_id, songname, livelink, url, "video", Q)
                     await loser.delete()
                     requester = (
                         f"[{m.from_user.first_name}](tg://user?id={m.from_user.id})"
@@ -497,9 +530,11 @@ async def vstream(c: Client, m: Message):
                     await m.reply_photo(
                         photo=f"{IMG_2}",
                         reply_markup=InlineKeyboardMarkup(buttons),
-                        caption=f"💡 **[Video Live]({link}) stream started.**\n\n💭 **Chat:** `{chat_id}`\n🧸 **Request by:** {requester}",
+                        caption=f"🗂 **Name:** [{songname}]({url}) | `live`\n🧸 **Requested by:** {requester}",
                     )
-                except Exception as ep:
+                except (NoActiveGroupCall, GroupCallNotFound):
                     await loser.delete()
                     await remove_active_chat(chat_id)
-                    await m.reply_text(f"🚫 error: `{ep}`")
+                    await m.reply_text("❌ The bot can't find the Group call or it's inactive.\n\n» Use /startvc command to turn on the Group call !")
+                except BaseException as err:
+                    print(err)
