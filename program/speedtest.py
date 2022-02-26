@@ -1,14 +1,14 @@
-# credit to TeamYukki for this speedtest module
-
 import wget
 import speedtest
 
 from PIL import Image
+from config import BOT_USERNAME as bname
+
 from driver.filters import command
 from driver.decorators import sudo_users_only
-from config import BOT_USERNAME as bname
 from driver.core import bot as app
 from driver.utils import remove_if_exists
+
 from pyrogram import Client, filters
 from pyrogram.types import Message
 
