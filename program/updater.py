@@ -1,3 +1,4 @@
+import os
 import sys
 
 from git import Repo
@@ -6,6 +7,8 @@ from git.exc import InvalidGitRepositoryError
 
 from pyrogram.types import Message
 from pyrogram import Client, filters
+
+from program import LOGS
 from config import UPSTREAM_REPO, BOT_USERNAME
 
 from driver.filters import command
@@ -58,7 +61,7 @@ async def update_bot(_, message: Message):
     msg = await message.reply("❖ Checking updates...")
     update_avail = updater()
     if update_avail:
-        await msg.edit("✅ Update finished !\n\n• Bot restarting, back active again in 1 minute.")
+        await msg.edit("✅ Update finished !\n\n• Bot restarting, back active again in 1 minutes.")
         system("git pull -f && pip3 install --no-cache-dir -r requirements.txt")
         execle(sys.executable, sys.executable, "main.py", environ)
         return
@@ -68,8 +71,11 @@ async def update_bot(_, message: Message):
 @Client.on_message(command(["restart", f"restart@{BOT_USERNAME}"]) & ~filters.edited)
 @bot_creator
 async def restart_bot(_, message: Message):
-    msg = await message.reply("❖ Restarting bot...")
-    args = [sys.executable, "main.py"]
-    await msg.edit("✅ Bot restarted !\n\n• wait until 1 minute after bot Rebooted.")
-    execle(sys.executable, *args, environ)
-    return
+    try:
+        msg = await message.reply_text("❖ Restarting bot...")
+        LOGS.info("[INFO]: BOT SERVER RESTARTED !!")
+    except BaseException as err:
+        LOGS.info(f"[ERROR]: {err}")
+        return
+    await msg.edit_text("✅ Bot has restarted !\n\n» back active again in 5-10 seconds.")
+    os.system(f"kill -9 {os.getpid()} && python3 main.py")
