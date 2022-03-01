@@ -50,7 +50,7 @@ async def skip_current_song(chat_id):
                 link = chat_queue[1][2]
                 type = chat_queue[1][3]
                 Q = chat_queue[1][4]
-                if type == "Audio":
+                if type == "music":
                     await calls.change_stream(
                         chat_id,
                         AudioPiped(
@@ -58,7 +58,7 @@ async def skip_current_song(chat_id):
                             HighQualityAudio(),
                         ),
                     )
-                elif type == "Video":
+                elif type == "video":
                     if Q == 720:
                         hm = HighQualityVideo()
                     elif Q == 480:
@@ -128,11 +128,12 @@ async def stream_end_handler(_, u: Update):
         print(chat_id)
         op = await skip_current_song(chat_id)
         if op == 1:
-            pass
+            await remove_active_chat(chat_id)
+            return
         elif op == 2:
             await bot.send_message(
                 chat_id,
-                "❌ an error occurred\n\n» **Clearing** __Queues__ and leaving video chat.",
+                "❌ an error occurred\n\n» **Clearing** Queues and leaving video chat.",
             )
         else:
             await bot.send_message(
