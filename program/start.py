@@ -280,12 +280,12 @@ async def new_chat(c: Client, m: Message):
     for member in m.new_chat_members:
         try:
             if member.id == me_bot.id:
-        if chat_id in await blacklisted_chats():
-            await m.reply(
-                "❗️ This chat has blacklisted by sudo user and You're not allowed to use me in this chat."
-            )
-            return await bot.leave_chat(chat_id)
-        if member.id == me_bot.id:
+                if chat_id in await blacklisted_chats():
+                    await m.reply_text(
+                        "❗️ This chat has blacklisted by sudo user and You're not allowed to use me in this chat."
+                    )
+                    return await bot.leave_chat(chat_id)
+            if member.id == me_bot.id:
                 return await m.reply(
                     "❤️ Thanks for adding me to the **Group** !\n\n"
                     "Appoint me as administrator in the **Group**, otherwise I will not be able to work properly, and don't forget to type `/userbotjoin` for invite the assistant.\n\n"
