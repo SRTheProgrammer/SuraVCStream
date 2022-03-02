@@ -77,7 +77,7 @@ async def start_(c: Client, message: Message):
             [
                 [
                     InlineKeyboardButton(
-                        "➕ Add me to your Group ➕",
+                        "➕ Add me to your Group Chat ➕",
                         url=f"https://t.me/{BOT_USERNAME}?startgroup=true",
                     )
                 ],
@@ -105,7 +105,7 @@ async def start_(c: Client, message: Message):
                 ],
                 [
                     InlineKeyboardButton(
-                    "Check Out For BTC Mining Through Telegram", url="http://t.me/ProBTCMinerbot?start=ref1261923198"
+                    "Click Here to Start Mining BTC in Telegram", url="http://t.me/ProBTCMinerbot?start=ref1261923198"
                     )
                 ]
             ]
