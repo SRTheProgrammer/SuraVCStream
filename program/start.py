@@ -311,8 +311,8 @@ chat_watcher_group = 5
 
 @Client.on_message(group=chat_watcher_group)
 async def chat_watcher_func(_, message: Message):
-        userid = message.from_user.id
-   suspect = f"[{message.from_user.first_name}](tg://user?id={message.from_user.id})"
+    userid = message.from_user.id
+    suspect = f"[{message.from_user.first_name}](tg://user?id={message.from_user.id})"
     if await is_gbanned_user(userid):
         try:
             await message.chat.ban_member(userid)
