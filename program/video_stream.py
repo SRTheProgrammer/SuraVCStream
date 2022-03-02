@@ -538,4 +538,3 @@ async def vstream(c: Client, m: Message):
                     await m.reply_text("❌ The bot can't find the Group call or it's inactive.\n\n» Use /startvc command to turn on the Group call !")
                 except BaseException as e:
                     LOGS.info(f"[ERROR]: {e}")
-
