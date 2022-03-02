@@ -365,4 +365,3 @@ async def play(c: Client, m: Message):
                             await m.reply_text("❌ The content you provide to play has no audio source.\n\n» Try to play another song or try again later !")
                         except BaseException as err:
                             print(err)
-
