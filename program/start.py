@@ -110,12 +110,12 @@ async def start_(c: Client, message: Message):
                 ]
             ]
         ),
-    disable_web_page_preview=True,
     await c.reply_photo(
-    user_id,
-    photo=f"{BG_IMG}",
-    caption=start,
-    reply_markup=inlinekeyboard
+        user_id,
+        photo=f"{BG_IMG}",
+        caption=start,
+        reply_markup=inlinekeyboard,
+        disable_web_page_preview=True,
     )
 
 @Client.on_message(
