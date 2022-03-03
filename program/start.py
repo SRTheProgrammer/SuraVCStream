@@ -73,7 +73,7 @@ async def start_(c: Client, message: Message):
 🔖 **To know how to use this bot, please click on the » 📕 Read Basic Guide button!**\n
 👽 **To Deploy Your Own Source Click On The » 👉 My Source Code Button **\n """
     
-        inlinekeyboard=InlineKeyboardMarkup(
+    inlinekeyboard=InlineKeyboardMarkup(
             [
                 [
                     InlineKeyboardButton(
@@ -110,8 +110,9 @@ async def start_(c: Client, message: Message):
                 ]
             ]
         ),
-            disable_web_page_preview=True,
-            client.send_photo(
+disable_web_page_preview=True,
+            
+client.send_photo(
     chat_id=message.chat.id,
     photo=f{BG_IMG},
     caption=start,
