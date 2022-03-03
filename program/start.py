@@ -111,7 +111,8 @@ async def start_(c: Client, message: Message):
             ]
         ),
         disable_web_page_preview=True,
-
+)
+      
         await c.send_photo(
         user_id,
         photo=f"{BG_IMG}",
