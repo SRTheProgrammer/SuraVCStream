@@ -110,17 +110,14 @@ async def start_(c: Client, message: Message):
                 ]
             ]
         ),
-disable_web_page_preview=True,
-
-await c.send_photo(
+    disable_web_page_preview=True,
+    await c.send_photo(
     chat_id=message.chat.id,
     photo=f"{BG_IMG}",
     caption=start,
-    reply_markup=inlinekeyboard                
-)
-            
-   
-    
+    reply_markup=inlinekeyboard
+    )
+
 @Client.on_message(
     command(["help", f"help@{BOT_USERNAME}"]) & filters.private & ~filters.edited
 )
