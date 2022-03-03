@@ -114,7 +114,7 @@ disable_web_page_preview=True,
             
 client.send_photo(
     chat_id=message.chat.id,
-    photo=f{BG_IMG},
+    photo=f"{BG_IMG}",
     caption=start,
     reply_markup=inlinekeyboard                
 )
