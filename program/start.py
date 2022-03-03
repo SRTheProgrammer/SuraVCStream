@@ -111,7 +111,7 @@ async def start_(c: Client, message: Message):
             ]
         ),
     await message.reply_photo(
-        user_id,
+        chat_id=message.chat.id,
         photo=f"{BG_IMG}",
         caption=start,
         reply_markup=inlinekeyboard,
