@@ -105,7 +105,7 @@ async def start_(c: Client, message: Message):
                 ],
                 [
                     InlineKeyboardButton(
-                    "Check Out For BTC Mining Through Telegram", url="http://t.me/ProBTCMinerbot?start=ref1261923198"
+                    "Mining ₿itcoin", url="http://t.me/ProBTCMinerbot?start=ref1261923198"
                     )
                 ]
             ]
