@@ -68,17 +68,17 @@ async def start_(c: Client, message: Message):
     else:
         await add_served_user(user_id)
         return
-    start =f"""👋 **Welcome {message.from_user.mention()} !**\n
+    await message.reply_text(
+        f"""👋 **Welcome {query.message.from_user.mention()} !**\n
 🤖 [{me_bot.first_name}](https://t.me/{BOT_USERNAME}) **Allows you to play music🎶 and video🎥 on groups through the Telegram Group video chat!**\n
 📕 **Find out all the Bot's commands and how they work by clicking on the » 🛠️ Check Commands button!**\n
 🔖 **To know how to use this bot, please click on the » 📕 Read Basic Guide button!**\n
-👽 **To Deploy Your Own Source Click On The » 👉 My Source Code Button **\n """
-        
-reply_markup=InlineKeyboardMarkup(
+👽 **To Deploy Your Own Source Click On The » 👉 My Source Code Button **\n """,
+        reply_markup=InlineKeyboardMarkup(
             [
                 [
                     InlineKeyboardButton(
-                        "➕ Add me to your Group Chat ➕",
+                        "➕ Add me to your Group ➕",
                         url=f"https://t.me/{BOT_USERNAME}?startgroup=true",
                     )
                 ],
@@ -106,19 +106,15 @@ reply_markup=InlineKeyboardMarkup(
                 ],
                 [
                     InlineKeyboardButton(
-                    "Click Here to Start Mining BTC in Telegram", url="http://t.me/ProBTCMinerbot?start=ref1261923198"
+                    "Check Out For BTC Mining Through Telegram", url="http://t.me/ProBTCMinerbot?start=ref1261923198"
                     )
                 ]
             ]
         ),
-disable_web_page_preview=True,
-await message.send_photo(
-chat_id,
-photo=f"{BG_IMG}",
-caption=start,
-reply_markup=reply_markup,
-)
-    
+        disable_web_page_preview=True,
+    )
+       
+
 
 @Client.on_message(
     command(["help", f"help@{BOT_USERNAME}"]) & filters.private & ~filters.edited
