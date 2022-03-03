@@ -53,8 +53,7 @@
 | `/stats` | use this to get stats of your bot |
 | `/calls` | use this to get active group calls in your database |
 | `/logs` | to get logs of your bot |
-| `/help` | to show help message in private chat |
-| `/ghelp` | to show help message in group chats |
+| `/help` | to show help message |
 
 
 
