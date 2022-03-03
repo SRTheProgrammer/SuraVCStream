@@ -111,7 +111,7 @@ async def start_(c: Client, message: Message):
             ]
         ),
     disable_web_page_preview=True,
-    await c.send_photo(
+    await c.reply_photo(
     chat_id=message.chat.id,
     photo=f"{BG_IMG}",
     caption=start,
