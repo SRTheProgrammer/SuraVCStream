@@ -113,7 +113,7 @@ reply_markup=InlineKeyboardMarkup(
         ),
 disable_web_page_preview=True,
 
-await c.send_photo(
+await message.send_photo(
 chat_id,
 photo=f"{BG_IMG}",
 caption=start,
