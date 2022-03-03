@@ -110,14 +110,14 @@ reply_markup=InlineKeyboardMarkup(
                 ]
             ]
         ),
-        disable_web_page_preview=True,
+disable_web_page_preview=True,
 
-        await c.send_photo(
-        user_id,
-        photo=f"{BG_IMG}",
-        caption=start,
-        reply_markup=reply_markup,
-    )
+await c.send_photo(
+user_id,
+photo=f"{BG_IMG}",
+caption=start,
+reply_markup=reply_markup,
+)
     
 
 @Client.on_message(
