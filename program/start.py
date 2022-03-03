@@ -62,6 +62,7 @@ async def _human_time_duration(seconds):
 @check_blacklist()
 async def start_(c: Client, message: Message):
     user_id = message.from_user.id
+    chat_id = message.chat.id
     if await is_served_user(user_id):
         pass
     else:
@@ -113,7 +114,7 @@ reply_markup=InlineKeyboardMarkup(
 disable_web_page_preview=True,
 
 await c.send_photo(
-user_id,
+chat_id,
 photo=f"{BG_IMG}",
 caption=start,
 reply_markup=reply_markup,
