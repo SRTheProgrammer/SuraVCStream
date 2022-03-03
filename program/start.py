@@ -68,7 +68,7 @@ async def start_(c: Client, message: Message):
         await add_served_user(user_id)
         return
     await message.reply_text(
-        f"""👋 **Welcome {query.message.from_user.mention()} !**\n
+        f"""👋 **Welcome {message.from_user.mention()} !**\n
 🤖 [{me_bot.first_name}](https://t.me/{BOT_USERNAME}) **Allows you to play music🎶 and video🎥 on groups through the Telegram Group video chat!**\n
 📕 **Find out all the Bot's commands and how they work by clicking on the » 🛠️ Check Commands button!**\n
 🔖 **To know how to use this bot, please click on the » 📕 Read Basic Guide button!**\n
@@ -105,17 +105,14 @@ async def start_(c: Client, message: Message):
                 ],
                 [
                     InlineKeyboardButton(
-                    "Mine Bitcoin", url="http://t.me/ProBTCMinerbot?start=ref1261923198"
+                    "Check Out For BTC Mining Through Telegram", url="http://t.me/ProBTCMinerbot?start=ref1261923198"
                     )
                 ]
             ]
         ),
-        
         disable_web_page_preview=True,
     )
     
-    
-
 @Client.on_message(
     command(["help", f"help@{BOT_USERNAME}"]) & filters.private & ~filters.edited
 )
