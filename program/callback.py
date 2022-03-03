@@ -61,7 +61,7 @@ async def start_set(_, query: CallbackQuery):
                 ],
                 [
                     InlineKeyboardButton(
-                    "Check Out For BTC Mining Through Telegram", url="http://t.me/ProBTCMinerbot?start=ref1261923198"
+                    "Mining ₿itcoin", url="http://t.me/ProBTCMinerbot?start=ref1261923198"
                     )
                 ]
             ]
