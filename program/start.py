@@ -162,7 +162,7 @@ async def help(c: Client, message: Message):
     )
     
 @Client.on_message(
-    command(["ghelp", f"ghelp@{BOT_USERNAME}"]) & filters.group & ~filters.edited
+    command(["/help", f"/help@{BOT_USERNAME}"]) & filters.group & ~filters.edited
 )
 @check_blacklist()
 async def ghelp(c: Client, message: Message):
