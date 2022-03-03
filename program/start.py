@@ -112,7 +112,6 @@ reply_markup=InlineKeyboardMarkup(
             ]
         ),
 disable_web_page_preview=True,
-
 await message.reply_photo(
 chat_id,
 photo=f"{BG_IMG}",
