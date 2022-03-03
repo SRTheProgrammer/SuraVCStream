@@ -110,7 +110,7 @@ async def start_(c: Client, message: Message):
                 ]
             ]
         ),
-    await c.reply_photo(
+    await message.reply_photo(
         user_id,
         photo=f"{BG_IMG}",
         caption=start,
