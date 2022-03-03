@@ -112,7 +112,7 @@ async def start_(c: Client, message: Message):
         ),
     disable_web_page_preview=True,
     await c.reply_photo(
-    chat_id=message.chat.id,
+    user_id,
     photo=f"{BG_IMG}",
     caption=start,
     reply_markup=inlinekeyboard
