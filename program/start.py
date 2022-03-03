@@ -62,7 +62,6 @@ async def _human_time_duration(seconds):
 @check_blacklist()
 async def start_(c: Client, message: Message):
     user_id = message.from_user.id
-    chat_id = message.chat.id
     if await is_served_user(user_id):
         pass
     else:
@@ -106,15 +105,16 @@ async def start_(c: Client, message: Message):
                 ],
                 [
                     InlineKeyboardButton(
-                    "Check Out For BTC Mining Through Telegram", url="http://t.me/ProBTCMinerbot?start=ref1261923198"
+                    "Mine Bitcoin", url="http://t.me/ProBTCMinerbot?start=ref1261923198"
                     )
                 ]
             ]
         ),
+        
         disable_web_page_preview=True,
     )
-       
-
+    
+    
 
 @Client.on_message(
     command(["help", f"help@{BOT_USERNAME}"]) & filters.private & ~filters.edited
