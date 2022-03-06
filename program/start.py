@@ -67,6 +67,7 @@ async def start_(c: Client, message: Message):
     else:
         await add_served_user(user_id)
         return
+    await message.reply_photo(BG_IMG)
     await message.reply_text(
         f"""👋 **Welcome {message.from_user.mention()} !**\n
 🤖 [{me_bot.first_name}](https://t.me/{BOT_USERNAME}) **Allows you to play music🎶 and video🎥 on groups through the Telegram Group video chat!**\n
@@ -111,8 +112,8 @@ async def start_(c: Client, message: Message):
             ]
         ),
         disable_web_page_preview=True,
-    )
-    
+    )   
+
 @Client.on_message(
     command(["help", f"help@{BOT_USERNAME}"]) & filters.private & ~filters.edited
 )
