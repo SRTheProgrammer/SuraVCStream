@@ -214,7 +214,7 @@ async def user_set(_, query: CallbackQuery):
 
 » /play (song name/link) - play music on video chat
 » /vplay (video name/link) - play video on video chat
-» /vstream (m3u8/yt live link) - play live stream video
+» /stream (m3u8/yt live link) - play live stream music
 » /playlist - see the current playing song
 » /lyric (query) - scrap the song lyric
 » /video (query) - download video from youtube
