@@ -25,7 +25,7 @@ async def start_set(_, query: CallbackQuery):
     await query.answer("home start")
     await query.edit_message_text(
         f"""👋 **Welcome {query.message.from_user.mention()} !**\n
-🤖 [{me_bot.first_name}](https://t.me/{BOT_USERNAME}) **Allows you to play music🎶 and video🎥 on groups through the Telegram Group video chat!**\n
+🤖 [{me_bot.first_name}](https://t.me/{me_bot.username}) **Allows you to play music🎶 and video🎥 on groups through the Telegram Group video chat!**\n
 📕 **Find out all the Bot's commands and how they work by clicking on the » 🛠️ Check Commands button!**\n
 🔖 **To know how to use this bot, please click on the » 📕 Read Basic Guide button!**\n
 👽 **To Deploy Your Own Source Click On The » 👉 My Source Code Button **\n """,
@@ -207,25 +207,25 @@ All commands can be used with (`! / .`) handler""",
 @Client.on_callback_query(filters.regex("user_command"))
 @check_blacklist()
 async def user_set(_, query: CallbackQuery):
-    BOT_NAME = me_bot.first_name
     await query.answer("basic commands")
     await query.edit_message_text(
         f"""✏️ Command list for all user.
-
-» /play (song name/link) - play music on video chat
-» /vplay (video name/link) - play video on video chat
-» /stream (m3u8/yt live link) - play live stream music
-» /playlist - see the current playing song
-» /lyric (query) - scrap the song lyric
+        
+» /play (song name/youtube link) - play the music from youtube
+» /stream (m3u8/youtube live link) - play youtube/m3u8 live stream music
+» /vplay (video name/youtube link) - play the video from youtube
+» /vstream (m3u8/youtube live link) - play youtube/m3u8 live stream video
+» /playlist - view the queue list of songs and current playing song
+» /lyric (query) - search for song lyrics based on the name of the song
 » /video (query) - download video from youtube
 » /song (query) - download song from youtube
-» /search (query) - search a youtube video link
+» /search (query) - search for the youtube video link
 » /ping - show the bot ping status
 » /uptime - show the bot uptime status
 » /alive - show the bot alive info (in Group only)
-» /help - to Show Help Message (Full Bot Guide)
-
-⚡️ __Powered by {BOT_NAME} AI__""",
+» /help - to Show Help Message (Full Bot Guide)"""
+            
+        
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton("🔙 Go Back", callback_data="command_list")]]
         ),
@@ -235,7 +235,6 @@ async def user_set(_, query: CallbackQuery):
 @Client.on_callback_query(filters.regex("admin_command"))
 @check_blacklist()
 async def admin_set(_, query: CallbackQuery):
-    BOT_NAME = me_bot.first_name
     await query.answer("admin commands")
     await query.edit_message_text(
         f"""✏️ Command list for group admin.
@@ -251,9 +250,7 @@ async def admin_set(_, query: CallbackQuery):
 » /userbotjoin - invite the userbot to join group
 » /userbotleave - order userbot to leave from group
 » /startvc - start/restart the group call
-» /stopvc - stop/discard the group call
-
-⚡️ __Powered by {BOT_NAME} AI__""",
+» /stopvc - stop/discard the group call""",
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton("🔙 Go Back", callback_data="command_list")]]
         ),
@@ -264,7 +261,6 @@ async def admin_set(_, query: CallbackQuery):
 @check_blacklist()
 async def sudo_set(_, query: CallbackQuery):
     user_id = query.from_user.id
-    BOT_NAME = me_bot.first_name
     if user_id not in SUDO_USERS:
         await query.answer("⚠️ You don't have permissions to click this button\n\n» This button is reserved for sudo members of this bot.", show_alert=True)
         return
@@ -280,10 +276,8 @@ async def sudo_set(_, query: CallbackQuery):
 » /speedtest - run the bot server speedtest
 » /sysinfo - show the system informatio
 » /logs - generate the current bot logs
-» /eval - execute any code (`developer stuff`)
-» /sh - run any command (`developer stuff`)
-
-⚡ __Powered by {BOT_NAME} AI__""",
+» /eval - run an code
+» /sh - run an code""",
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton("🔙 Go Back", callback_data="command_list")]]
         ),
@@ -294,7 +288,6 @@ async def sudo_set(_, query: CallbackQuery):
 @check_blacklist()
 async def owner_set(_, query: CallbackQuery):
     user_id = query.from_user.id
-    BOT_NAME = me_bot.first_name
     if user_id not in OWNER_ID:
         await query.answer("⚠️ You don't have permissions to click this button\n\n» This button is reserved for owner of this bot.", show_alert=True)
         return
@@ -305,13 +298,12 @@ async def owner_set(_, query: CallbackQuery):
 » /gban (`username` or `user_id`) - for global banned people, can be used only in group
 » /ungban (`username` or `user_id`) - for un-global banned people, can be used only in group
 » /update - update your bot to latest version
-» /restart - restart your bot directly
+» /restart - restart your bot server
 » /leaveall - order userbot to leave from all group
 » /leavebot (`chat id`) - order bot to leave from the group you specify
 » /broadcast (`message`) - send a broadcast message to all groups in bot database
-» /broadcast_pin (`message`) - send a broadcast message to all groups in bot database with the chat pin
+» /broadcast_pin (`message`) - send a broadcast message to all groups in bot database with the chat pin""",
 
-⚡ __Powered by {BOT_NAME} AI__""",
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton("🔙 Go Back", callback_data="command_list")]]
         ),
