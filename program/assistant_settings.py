@@ -2,6 +2,7 @@ import asyncio
 
 from config import BOT_USERNAME, SUDO_USERS
 
+from program import LOGS
 from program.utils.function import get_calls
 
 from driver.queues import QUEUE
@@ -36,9 +37,9 @@ async def join_chat(c: Client, m: Message):
             )
         await user.join_chat(invitelink)
         await remove_active_chat(chat_id)
-        return await user.send_message(chat_id, "✅ userbot joined chat")
+        return await user.send_message(chat_id, "✅ userbot joined this chat")
     except UserAlreadyParticipant:
-        return await user.send_message(chat_id, "✅ userbot already in chat")
+        return await user.send_message(chat_id, "✅ userbot already in this chat")
 
 
 @Client.on_message(
@@ -46,49 +47,45 @@ async def join_chat(c: Client, m: Message):
 )
 @check_blacklist()
 @authorized_users_only
-async def leave_chat(_, m: Message):
+async def leave_chat(c :Client, m: Message):
     chat_id = m.chat.id
     try:
-        await user.leave_chat(chat_id)
-        await remove_active_chat(chat_id)
-        return await _.send_message(
-            chat_id,
-            "✅ userbot leaved chat",
-        )
+        if chat_id in QUEUE:
+            await remove_active_chat(chat_id)
+            await user.leave_chat(chat_id)
+            return await c.send_message(chat_id, "✅ userbot has left from chat")
+        else:
+            await user.leave_chat(chat_id)
+            return await c.send_message(chat_id, "✅ userbot has left from chat")
     except UserNotParticipant:
-        return await _.send_message(
-            chat_id,
-            "❌ userbot already leave chat",
-        )
+        return await c.send_message(chat_id, "❌ userbot already leave chat")
 
 
 @Client.on_message(command(["leaveall", f"leaveall@{BOT_USERNAME}"]) & ~filters.edited)
 @bot_creator
-async def leave_all(client, message):
+async def leave_all(c: Client, message: Message):
     if message.from_user.id not in SUDO_USERS:
         return
-
-    left = 0
-    failed = 0
-    
-    msg = await message.reply("🔄 Userbot leaving all Group !")
+    run_1 = 0
+    run_2 = 0
+    msg = await message.reply("🔄 Userbot started leaving all groups")
     async for dialog in user.iter_dialogs():
         try:
             await user.leave_chat(dialog.chat.id)
             await remove_active_chat(dialog.chat.id)
-            left += 1
+            run_1 += 1
             await msg.edit(
-                f"Userbot leaving all Group...\n\nLeft: {left} chats.\nFailed: {failed} chats."
+                f"Userbot leaving...\n\nLeft from: {run_1} chats.\nFailed in: {run_2} chats."
             )
-        except BaseException:
-            failed += 1
+        except Exception:
+            run_2 += 1
             await msg.edit(
-                f"Userbot leaving...\n\nLeft: {left} chats.\nFailed: {failed} chats."
+                f"Userbot leaving...\n\nLeft from: {run_1} chats.\nFailed in: {run_2} chats."
             )
         await asyncio.sleep(0.7)
     await msg.delete()
     await client.send_message(
-        message.chat.id, f"✅ Left from: {left} chats.\n❌ Failed in: {failed} chats."
+        message.chat.id, f"✅ Left from: {run_2} chats.\n❌ Failed in: {run_2} chats."
     )
 
 
@@ -122,19 +119,25 @@ async def start_group_call(c: Client, m: Message):
 async def stop_group_call(c: Client, m: Message):
     chat_id = m.chat.id
     msg = await c.send_message(chat_id, "`stopping...`")
-    if not (
-        group_call := (
-            await get_calls(m, err_msg="group call not active")
+    try:
+        if not (
+            group_call := (
+                await get_calls(m, err_msg="group call not active")
+            )
+        ):
+            await msg.edit_text("❌ The group call already ended")
+            return
+        await user.send(
+            DiscardGroupCall(
+                call=group_call
+            )
         )
-    ):
-        await msg.edit_text("❌ The group call already ended")
-        return
-    await user.send(
-        DiscardGroupCall(
-            call=group_call
-        )
-    )
-    await msg.edit_text("✅ Group call has ended !")
+        await msg.edit_text("✅ Group call has ended !")
+    except Exception as e:
+        if "GROUPCALL_FORBIDDEN" in str(e):
+            await msg.edit_text(
+                "The userbot is not admin in this chat. To stop the Group call you must promote the userbot as admin first with permission:\n\n» ❌ manage_video_chats"
+            )
 
 
 @Client.on_message(filters.left_chat_member)
@@ -149,5 +152,5 @@ async def bot_kicked(c: Client, m: Message):
         try:
             await user.leave_chat(chat_id)
             await remove_served_chat(chat_id)
-        except BaseException as err:
-            print(err)
+        except Exception as e:
+            LOGS.info(e)
