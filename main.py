@@ -7,14 +7,14 @@ from driver.core import calls, bot, user
 
 async def start_bot():
     await bot.start()
-    LOGS.info("[INFO]: BOT & USERBOT CLIENT STARTED !!")
+    LOGS.info("[ INFO ] BOT & USERBOT CLIENT STARTED")
     await calls.start()
-    LOGS.info("[INFO]: PY-TGCALLS CLIENT STARTED !!")
+    LOGS.info("[ INFO ] PY-TGCALLS CLIENT STARTED")
     await user.join_chat("SuraBotSupport")
     await user.join_chat("SuraBotStats")
     await idle()
-    LOGS.info("[INFO]: BOT & USERBOT STOPPED !!")
+    LOGS.info("[ INFO ] BOT & USERBOT CLIENT STOPPED")
     await bot.stop()
 
-loop = asyncio.get_event_loop()
+loop = asyncio.get_event_loop_policy().get_event_loop()
 loop.run_until_complete(start_bot())
