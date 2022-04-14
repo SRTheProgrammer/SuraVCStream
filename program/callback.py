@@ -223,7 +223,7 @@ async def user_set(_, query: CallbackQuery):
 » /ping - show the bot ping status
 » /uptime - show the bot uptime status
 » /alive - show the bot alive info (in Group only)
-» /help - to Show Help Message (Full Bot Guide)"""
+» /help - to Show Help Message (Full Bot Guide)""",
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton("🔙 Go Back", callback_data="command_list")]]
         ),
