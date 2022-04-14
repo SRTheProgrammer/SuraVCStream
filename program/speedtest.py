@@ -25,18 +25,21 @@ async def run_speedtest(_, message: Message):
         m = await m.edit("⚡️ running upload speedtest...")
         test.upload()
         test.results.share()
-        result = test.results.dict()
+    except speedtest.ShareResultsConnectFailure:
+        pass
     except Exception as e:
         await m.edit(e)
         return
+    result = test.results.dict()
     m = await m.edit("🔄 sharing speedtest results")
-    path = wget.download(result["share"])
-    try:
-        img = Image.open(path)
-        c = img.crop((17, 11, 727, 389))
-        c.save(path)
-    except BaseException:
-        pass
+    if result["share"]:
+        path = wget.download(result["share"])
+        try:
+            img = Image.open(path)
+            c = img.crop((17, 11, 727, 389))
+            c.save(path)
+        except BaseException:
+            pass
 
     output = f"""💡 **SpeedTest Results**
     
@@ -50,8 +53,13 @@ async def run_speedtest(_, message: Message):
 **Sponsor:** {result['server']['sponsor']}
 **Latency:** {result['server']['latency']}
 ⚡️ **Ping:** {result['ping']}"""
-    msg = await app.send_photo(
-        chat_id=message.chat.id, photo=path, caption=output
-    )
-    remove_if_exists(path)
+    if result["share"]:
+        msg = await app.send_photo(
+            chat_id=message.chat.id, photo=path, caption=output
+        )
+        remove_if_exists(path)
+    else:
+        msg = await app.send_message(
+            chat_id=message.chat.id, text=output
+        )
     await m.delete()
