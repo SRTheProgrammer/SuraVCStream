@@ -64,7 +64,7 @@
 ## Heroku Deployment
 The easy way to host this bot, deploy to Heroku, Change the app country to Europe (it will help to make the bot stable).
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/SRTheProgrammer/SuraVCStream)
 
 ## VPS Deployment 
 (Tutorial On Deploying to VPS is Coming Soon, You Don't Need to Worry)
